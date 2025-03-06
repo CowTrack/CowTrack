@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Contraseña</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: white;
+            position: relative;
+        }
+
+        /* Fondo de manchas de vaca */
+        body::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('Imagenes/fondoLoginVacaBeige.png');
+            background-size: cover;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
+        }
+
+        h2 {
+            font-size: 25px;
+            font-weight: 600;
+            margin: 20px 0 20px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 30px 0 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .input-container input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid rgb(94, 94, 94);
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+            border-radius: 5px;
+            transition: 0.2s ease-in-out;
+        }
+
+        /* Brillo al hacer clic */
+        .input-container input:focus,
+        .code-inputs input:hover {
+            border: 2px solid #40a035;
+        }
+
+        /* Placeholder animado */
+        .input-container label {
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgb(94, 94, 94);
+            transition: 0.2s ease-in-out;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+        }
+
+        .input-container input:focus+label,
+        .input-container input:not(:placeholder-shown)+label {
+            top: 0px;
+            font-size: 13px;
+            color: #40a035;
+        }
+
+
+        /* Input estilo código de verificación */
+        .code-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+
+        }
+
+        .code-inputs input {
+            width: 50px;
+            height: 50px;
+            outline: none;
+            text-align: center;
+            font-size: 20px;
+            border: 1px solid rgb(94, 94, 94);
+            border-radius: 5px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .cancel,
+        .back {
+            color: rgb(71, 71, 71);
+            text-decoration: none;
+            display: block;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        .cancel:hover,
+        .back:hover {
+            color: #448b3d;
+        }
+
+        .btn {
+            background-color: #55af4b;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 80%;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .btn:hover {
+            background-color: #448b3d;
+        }
+
+        /* Ocultar la pantalla del segundo paso inicialmente */
+        #step2 {
+            display: none;
+        }
+    </style>
+</head>
+
+<body onload="showStep1()">
+
+    <!-- Primer Paso -->
+    <div class="container" id="step1">
+        <h2>Recuperar Contraseña</h2>
+        <p>1° Paso</p>
+        <p>Ingrese un correo para enviarle un Código de Verificación</p>
+        <div class="input-container">
+            <input type="email" id="email" placeholder=" " required>
+            <label for="email">Correo</label>
+        </div>
+        <button class="btn" onclick="showStep2()">Enviar</button>
+        <a href="Login.html" class="cancel">Cancelar</a> <!-- Redirección a Login -->
+    </div>
+
+    <!-- Segundo Paso -->
+    <div class="container" id="step2">
+        <h2>Recuperar Contraseña</h2>
+        <p>2° Paso</p>
+        <p>Ingrese el Código de Verificación que se le fue enviado al correo</p>
+        <div class="code-inputs">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+            <input type="text" maxlength="1">
+        </div>
+        <button class="btn" onclick="showStep3()">Enviar</button>
+        <a href="#" class="back" onclick="showStep1()">Regresar</a>
+
+    </div>
+
+    <!-- Tercer Paso -->
+    <div class="container" id="step3">
+        <h2>Recuperar Contraseña</h2>
+        <p>3° Paso</p>
+        <p>Ingrese una nueva contraseña</p>
+        <div class="input-container">
+            <input type="password" id="password" placeholder=" " required>
+            <label for="password">Nueva Contraseña</label>
+        </div>
+        <p class="error" id="errorMsg">⚠ La contraseña debe tener al menos 5 caracteres, incluir letras y números.</p>
+        <button class="btn" onclick="validatePassword()">Confirmar</button>
+        <a href="#" class="back" onclick="showStep2()">Regresar</a>
+
+    </div>
+
+    <script>
+        function showStep1() {
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        }
+
+        function showStep2() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'none';
+        }
+
+        function showStep3() {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'block';
+        }
+
+        function validatePassword() {
+            let password = document.getElementById("newPassword").value;
+            let errorMsg = document.getElementById("errorMsg");
+
+            // Expresión regular: mínimo 5 caracteres, al menos 1 letra y 1 número
+            let passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/;
+
+            if (passwordRegex.test(password)) {
+                alert("Contraseña cambiada con éxito ✅");
+                // Aquí podrías redirigir o limpiar el formulario si lo deseas
+            } else {
+                errorMsg.style.display = "block";
+            }
+        }
+    </script>
+
+</body>
+
+</html>
