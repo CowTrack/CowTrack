@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CowTrack - Estadisticas</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        /* IMPORTACION DEL HEADER y lo Mantiene fijo */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px !important;
+            background-color: white;
+            z-index: 1000;
+        }
+
+        /* Mantiene el sidebar fijo */
+        .sidebar {
+            position: fixed;
+            display: flex;
+            top: 55px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #484848;
+            z-index: 999;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contenIzquierdo,
+        .contenDerecho {
+            display: flex;
+            align-items: center;
+        }
+
+        .contenIzquierdo {
+            justify-content: flex-start;
+            /* Mantiene elementos a la izquierda */
+            padding-left: 15px;
+            gap: 20px;
+
+        }
+
+        .contenDerecho {
+            justify-content: flex-end;
+            /* Mantiene elementos a la derecha */
+            padding-right: 15px;
+            gap: 10px;
+
+        }
+
+        .contenIzquierdo svg,
+        .contenDerecho svg {
+            cursor: pointer;
+        }
+
+        .icon-button {
+            position: relative;
+            background: transparent;
+            border-left: #2c2f33 1px solid;
+            border-right: #2c2f33 1px solid;
+            border-top: none;
+            border-bottom: none;
+            padding: 10px 10px 0px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            height: 45px;
+            /*relative: los elementos se posicionan de forma relativa a su posición normal.*/
+            display: inline-block;
+            transition: 0.5s;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #2c2f33;
+            color: #fff;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            top: 110%;
+            /* Posiciona el tooltip bajo del elemento */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0%;
+            font-family: sans-serif;
+            font-size: 15px;
+            font-weight: bolder;
+            transition: opacity 0.2s;
+        }
+
+        .icon-button:hover .tooltip-text {
+            visibility: visible;
+            opacity: 90%;
+        }
+
+        .icon-button:hover {
+            background: #2c2f33;
+        }
+
+        /*Estilos del banner*/
+        .encabezado {
+            margin-top: 105px;
+            padding: 40px 50px 20px 100px;
+            width: auto;
+        }
+
+
+
+        .info {
+            background-color: #E6E7E7;
+            width: 500px;
+            height: 60px;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+
+        .info p {
+            margin: 5px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .encabezado span {
+            display: block;
+            max-width: 75%;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+            font-size: 28px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 150px;
+        }
+
+        .infoIzquierdo {
+            display: flex;
+            align-items: center;
+            width: 75%;
+            gap: 20px;
+            padding-left: 100px;
+        }
+
+        .infoIzquierdo img {
+            width: auto;
+            height: 150px;
+            border-radius: 100%;
+        }
+
+        .infoDerecho {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 25%;
+            padding: 5px 30px 15px 30px;
+        }
+
+        .porcentajes {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 10px;
+        }
+
+        .infoDerecho label {
+            font-size: 15px;
+            font-weight: bold;
+            color: black;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .numPorcen {
+            position: absolute;
+            top: 38%;
+            left: 52%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: black;
+
+        }
+
+        .areaGraficas {
+            margin-top: 5px;
+            width: 450px;
+            margin-left: 50px;
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #E6E7E7;
+        }
+
+        .cuerpoPagina {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            margin-bottom: 50px;
+        }
+
+        .buttonExportar{
+            width:100%;
+            display: flex;
+            justify-content: right;
+            flex-wrap: wrap;
+            padding-top: 35px;
+            padding-bottom: 35px;
+        }
+        .buttonExportar button {
+            padding: 12px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 14px;
+            background-color: #484848;
+            color: #fff;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+            font-size: 15px;
+            font-weight: bold;
+            margin-right: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <iframe class="header" src="header.html" frameborder="0"></iframe>
+
+    <section class="sidebar">
+        <div class="contenIzquierdo"> <!-- NO QUITAR-->
+            <button class="icon-button">
+                <span class="tooltip-text">Inicio</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-house-door-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+                </svg>
+            </button>
+
+            <button class="icon-button">
+                <span class="tooltip-text">Estadisticas</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-bar-chart-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1z" />
+                </svg>
+            </button>
+
+            <button class="icon-button">
+                <span class="tooltip-text">Registro Vacuno</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-journals" viewBox="0 0 20 20">
+                    <path
+                        d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2" />
+                    <path
+                        d="M1 6v-.5a.5.5 0 0 1 1 0V6h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V9h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 2.5v.5H.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H2v-.5a.5.5 0 0 0-1 0" />
+                </svg>
+            </button>
+
+            <button class="icon-button">
+                <span class="tooltip-text">Reportes</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-file-medical-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M8.5 4.5v.634l.549-.317a.5.5 0 1 1 .5.866L9 6l.549.317a.5.5 0 1 1-.5.866L8.5 6.866V7.5a.5.5 0 0 1-1 0v-.634l-.549.317a.5.5 0 1 1-.5-.866L7 6l-.549-.317a.5.5 0 0 1 .5-.866l.549.317V4.5a.5.5 0 1 1 1 0M5.5 9h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1m0 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="contenDerecho">
+            <button class="icon-button">
+                <span class="tooltip-text">Notificaciones</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-bell-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
+                </svg>
+            </button>
+            <button class="icon-button">
+                <span class="tooltip-text">Configuración</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-gear-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                </svg>
+            </button>
+            <button class="icon-button">
+                <span class="tooltip-text">Cerrar Sesión</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-box-arrow-right" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                    <path fill-rule="evenodd"
+                        d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <section class="encabezado">
+        <span>Nombre de la Finca</span>
+    </section>
+
+    <section class="banner">
+        <div class="infoIzquierdo">
+            <img src="Imagenes/fotoPerfilFinca3.png" alt="Foto Perfil">
+            <div class="info">
+                <p><b>Ubicación:</b> Santa Ana, calle 128 Manzana 2 fraccionamiento x EEEEEEEEEEEEEEEEEEEEE</p>
+                <p><b>Encargado:</b> Pedrito Lareo Rubia</p>
+            </div>
+        </div>
+        <div class="infoDerecho">
+            <section class="porcentajes">
+                <canvas id="graficaEstado" width="120" height="120"></canvas>
+                <p class="numPorcen">75%</p>
+            </section>
+            <label>Estado de la finca</label>
+        </div>
+    </section>
+
+    <section class="buttonExportar">
+        <button>Exportar PDF</button>
+        <button>Exportar EXCEL</button>
+    </section>
+
+
+    <div class="cuerpoPagina">
+        <section class="areaGraficas">
+            <canvas id="graficaRaza" width="400" height="300"></canvas>
+        </section>
+
+        <section class="areaGraficas">
+            <canvas id="graficaEjemplares" width="400" height="300"></canvas>
+        </section>
+    </div>
+
+
+
+</body>
+<script>
+    let miCanvas1 = document.getElementById("graficaEstado").getContext("2d");
+    let miCanvas2 = document.getElementById("graficaRaza").getContext("2d");
+    let miCanvas3 = document.getElementById("graficaEjemplares").getContext("2d");
+
+
+    var chart = new Chart(miCanvas1, {
+        type: "doughnut",
+        data: {
+            labels: ["Satisfactorio", "No satisfactorio"],
+            datasets: [
+                {
+                    label: "Porcentaje",
+                    backgroundColor: ["#EAC655", "#D3D3D3"], // Dorado y gris
+
+                    data: [75, 25], // 75% lleno, 25% vacío
+                    categoryPercentage: 0.9
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "75%", // Tamaño del agujero central
+            plugins: {
+                legend: {
+                    display: false // Oculta los labels de la leyenda
+                },
+                tooltip: {
+                    enabled: true, // Activa los tooltips
+                    backgroundColor: "#E6E7E7",
+                    titleColor: "black",
+                    bodyColor: "black",
+                    borderWidth: 2,
+                    borderColor: "#d3d3d3"
+                }
+            }
+        }
+    })
+
+    var chart = new Chart(miCanvas2, {
+        type: "bar",
+        data: {
+            labels: ["Gyr", "Guzerat ", "Simbrah ", "Brangus", "Brahman", "Nelore"],
+            datasets: [
+                {
+                    label: "Cantidad por Raza",
+                    backgroundColor: "#EAC655",
+                    borderColor: "#C2A137",
+                    data: [120, 390, 50, 300, 190, 200],
+                    categoryPercentage: 0.9
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    enabled: true, // Activar o desactivar
+                    backgroundColor: "#E6E7E7",
+                    titleColor: "black",
+                    bodyColor: "black",
+                    borderWidth: 2,
+                    borderColor: "#d3d3d3"
+                }
+            }
+        }
+    })
+
+    var chart = new Chart(miCanvas3, {
+        type: "line",
+        data: {
+            labels: ["Enero", "Febrero ", "Marzo ", "Abril", "Mayo", "Junio", "Julio", "Agosto ", "Septiembre ", "Octubre", "Noviembre", "Diciembre"],
+            datasets: [
+                {
+                    label: "Cantidad de ejemplares",
+                    backgroundColor: "#C2A137",
+                    borderColor: "#C2A137",
+                    data: [120, 390, 50, 300, 190, 200],
+                    categoryPercentage: 0.9
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                tooltip: {
+                    enabled: true, // Activar o desactivar
+                    backgroundColor: "#E6E7E7",
+                    titleColor: "black",
+                    bodyColor: "black",
+                    borderWidth: 2,
+                    borderColor: "#d3d3d3"
+                }
+            }
+        }
+    })
+</script>
+
+</html>
