@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-03-2025 a las 19:18:54
+-- Tiempo de generación: 06-04-2025 a las 19:43:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -52,8 +52,8 @@ CREATE TABLE `empleado` (
   `Nombre` varchar(100) NOT NULL,
   `ID_Rol` int(11) NOT NULL,
   `Correo` varchar(100) NOT NULL,
-  `Contraseña` varchar(255) NOT NULL,
-  `ID_Dueño` int(11) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `ID_Dueno` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -65,9 +65,18 @@ CREATE TABLE `empleado` (
 CREATE TABLE `granja` (
   `ID_Granja` int(11) NOT NULL,
   `Dirección` text NOT NULL,
+  `Cant_Ganado` int(11) NOT NULL,
+  `Status` tinyint(1) NOT NULL,
   `Tatuaje` varchar(20) NOT NULL,
   `ID_Dueño` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `granja`
+--
+
+INSERT INTO `granja` (`ID_Granja`, `Dirección`, `Cant_Ganado`, `Status`, `Tatuaje`, `ID_Dueño`) VALUES
+(1, 'Avenida', 2, 1, 'herrado1', 1);
 
 -- --------------------------------------------------------
 
@@ -78,9 +87,22 @@ CREATE TABLE `granja` (
 CREATE TABLE `lote` (
   `ID_Lote` int(11) NOT NULL,
   `Fecha_Registro` date NOT NULL,
-  `ID_Vaca` int(11) NOT NULL,
+  `Herraje` varchar(100) NOT NULL,
+  `Cant_Vacuno` int(11) NOT NULL,
+  `Status` tinyint(1) NOT NULL,
   `ID_Granja` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `lote`
+--
+
+INSERT INTO `lote` (`ID_Lote`, `Fecha_Registro`, `Herraje`, `Cant_Vacuno`, `Status`, `ID_Granja`) VALUES
+(9, '2025-03-08', 'herrado1', 2, 1, 1),
+(10, '2025-03-10', 'herrado2', 3, 1, 1),
+(11, '2025-03-14', 'herrado3', 3, 1, 1),
+(12, '2025-03-16', 'herrado2', 2, 0, 1),
+(13, '2025-03-17', 'herrado1', 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -101,7 +123,6 @@ CREATE TABLE `rol` (
 
 CREATE TABLE `vacuno` (
   `ID_Vaca` int(11) NOT NULL,
-  `ID_Fierro` varchar(50) NOT NULL,
   `ID_Lote` int(11) NOT NULL,
   `ID_Arete` varchar(50) NOT NULL,
   `Genero` enum('Macho','Hembra') NOT NULL,
@@ -110,6 +131,16 @@ CREATE TABLE `vacuno` (
   `Estado_Salud` enum('Sano','Enfermo') NOT NULL,
   `Observaciones` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `vacuno`
+--
+
+INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `Genero`, `Fecha_Nacimiento`, `Raza`, `Estado_Salud`, `Observaciones`) VALUES
+(1, 9, '7sjdf8', 'Macho', '2024-03-12', 'Toro', 'Sano', 'De bajo peso, se requiere mayor alimentación'),
+(2, 12, 'sjak91', 'Hembra', '2024-11-09', 'Vaca', 'Sano', 'Preñada, pronto a dar a luz'),
+(3, 9, '894jYo9P', 'Macho', '2025-03-15', 'Toro', 'Enfermo', 'Desarrolló una infección intestinal'),
+(4, 11, '72JgMNh91', 'Macho', '2025-01-15', 'Toro', 'Enfermo', 'Presenta protuberancias en la zona de la oreja izquierda');
 
 --
 -- Índices para tablas volcadas
@@ -128,7 +159,7 @@ ALTER TABLE `dueño`
 ALTER TABLE `empleado`
   ADD PRIMARY KEY (`ID_Empleado`),
   ADD UNIQUE KEY `ID_Rol` (`ID_Rol`),
-  ADD UNIQUE KEY `ID_Dueño` (`ID_Dueño`);
+  ADD UNIQUE KEY `ID_Dueno` (`ID_Dueno`) USING BTREE;
 
 --
 -- Indices de la tabla `granja`
@@ -144,7 +175,7 @@ ALTER TABLE `granja`
 ALTER TABLE `lote`
   ADD PRIMARY KEY (`ID_Lote`),
   ADD UNIQUE KEY `ID_Lote` (`ID_Lote`),
-  ADD UNIQUE KEY `ID_Granja` (`ID_Granja`);
+  ADD KEY `ID_Granja` (`ID_Granja`) USING BTREE;
 
 --
 -- Indices de la tabla `rol`
@@ -158,7 +189,47 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `vacuno`
   ADD PRIMARY KEY (`ID_Vaca`),
-  ADD UNIQUE KEY `ID_Lote` (`ID_Lote`);
+  ADD KEY `ID_Lote` (`ID_Lote`) USING BTREE;
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `dueño`
+--
+ALTER TABLE `dueño`
+  MODIFY `ID_Dueno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `empleado`
+--
+ALTER TABLE `empleado`
+  MODIFY `ID_Empleado` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `granja`
+--
+ALTER TABLE `granja`
+  MODIFY `ID_Granja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `lote`
+--
+ALTER TABLE `lote`
+  MODIFY `ID_Lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT de la tabla `rol`
+--
+ALTER TABLE `rol`
+  MODIFY `ID_Rol` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `vacuno`
+--
+ALTER TABLE `vacuno`
+  MODIFY `ID_Vaca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas
@@ -168,7 +239,7 @@ ALTER TABLE `vacuno`
 -- Filtros para la tabla `empleado`
 --
 ALTER TABLE `empleado`
-  ADD CONSTRAINT `empleado_ibfk_1` FOREIGN KEY (`ID_Dueño`) REFERENCES `dueño` (`ID_Dueno`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `empleado_ibfk_1` FOREIGN KEY (`ID_Dueno`) REFERENCES `dueño` (`ID_Dueno`) ON UPDATE CASCADE,
   ADD CONSTRAINT `empleado_ibfk_2` FOREIGN KEY (`ID_Rol`) REFERENCES `rol` (`ID_Rol`) ON UPDATE CASCADE;
 
 --

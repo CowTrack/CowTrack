@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CowTrack - Listado de Fincas</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
 
         body {
@@ -15,7 +15,7 @@
             background-color: #f8f8f8;
         }
 
-        /* IMPORTACION DEL HEADER y lo Mantiene fijo */
+        /* IMPORTACION DEL HEADER y lo mantiene fijo */
         .header {
             position: fixed;
             top: 0;
@@ -184,6 +184,8 @@
             padding: 20px;
             background-color: #ffffff;
             margin-bottom: 270px;
+            overflow-y: auto;
+            max-height: 60vh;
         }
 
         .addFinca {
@@ -273,11 +275,59 @@
             font-weight: bold;
             color: #000000;
         }
+
+        .danger {
+            background-color: #ff4444 !important;
+            color: white !important;
+        }
+
+        .danger:hover {
+            background-color: #cc0000 !important;
+        }
+
+        .modal-content h3 {
+            color: #ff4444;
+            margin-top: 0;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            margin: 50px auto;
+            border-radius: 8px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 
 <body>
-    <iframe class="header" src="header.html" frameborder="0"></iframe>
+    <iframe class="header" src="{{ url_for('header') }}" frameborder="0"></iframe>
 
     <section class="sidebar">
         <div class="contenIzquierdo"> <!-- NO QUITAR--> </div>
@@ -299,7 +349,7 @@
                         d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
                 </svg>
             </button>
-            <button class="icon-button">
+            <button onclick="window.location.href= '{{ url_for('logout') }}'" class="icon-button">
                 <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-box-arrow-right" viewBox="0 0 20 20">
@@ -313,7 +363,7 @@
     </section>
 
     <section class="banner">
-        <img src="static/img/fondoVacas160.png" alt="Fondo con vacas">
+        <img src="{{ url_for('static', filename='img/fondoVacas160.png') }}" alt="Fondo con vacas">
         <span>Listado de Fincas</span>
     </section>
 
@@ -329,53 +379,237 @@
             </div>
         </div>
 
-        <div class="cuerpoPagina">
-            <div class="addFinca">
+       <div class="cuerpoPagina">
+            <div class="addFinca" onclick="showAddFincaForm()">
                 <svg color="black" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
                     class="bi bi-plus-lg" viewBox="0 0 15 15">
                     <path fill-rule="evenodd"
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                 </svg>Agregar finca
             </div>
+
+        {% for granja in granjas %}
             <div class="finca">
-                <img src="static/img/herrado1.png" alt="Herrado de la finca">
-                <h3>Finca 1</h3>
+                <!-- Display Tatuaje image -->
+                <img src="{{ url_for('static', filename='img/' ~ granja[4] ~ '.png') }}" alt="Tatuaje de la granja">
+                <h3>Finca {{ granja[0] }}</h3>
 
                 <div class="tooltip">
-                    <h3>Finca 1</h3>
-                    <p><svg color="red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
-                        </svg> Ubicación: Avenida</p>
-                    <p><svg color="#f7f336" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
-                        </svg> 304 ganados registrados</p>
-                    <p><svg color="green" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-                            <path
-                                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
-                        </svg> Estado de la finca</p>
+                    <h3>Finca {{ granja[0] }}</h3>
+                    <p>📍 Dirección: {{ granja[1] }}</p>
+                    <p>🐄 {{ granja[2] }} ganados registrados</p>
+                    <p>✅ Estado: {{ 'Activo' if granja[3] else 'Inactivo' }}</p>
                     <div class="actions">
-                        <button>Editar</button>
-                        <button>Eliminar</button>
-                        <button>Ver Finca</button>
+                         <button onclick="loadGranjaData({{ granja[0] }})">Editar</button>
+                        <button onclick="confirmDeleteGranja({{ granja[0] }})">Eliminar</button>
+                        <button onclick="viewGranja({{ granja[0] }})">Ver finca</button>
                     </div>
                 </div>
+            </div>
+        {% endfor %}
+       </div>
 
-            </div>
-            <div class="finca">
-                <img src="static/img/herrado2.png" alt="Herrado de la finca">
-                <h3>Finca 2</h3>
-            </div>
-            <div class="finca">
-                <img src="static/img/herrado3.png" alt="Herrado de la finca">
-                <h3>Finca 3</h3>
+        <div id="addFincaModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="granjaForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label>Dirección:</label>
+                        <input type="text" id="direccion" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad de Ganado:</label>
+                        <input type="number" id="cant_ganado" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tatuaje:</label>
+                        <input type="text" id="tatuaje" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select id="status" required>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                    <button type="submit">Guardar</button>
+                </form>
             </div>
         </div>
     </main>
-</body>
 
+    <div id="editGranjaModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Editar Granja</h2>
+            <form id="editGranjaForm">
+                <input type="hidden" id="edit_id">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Dirección:</label>
+                    <input type="text" id="edit_direccion" required>
+                </div>
+                <div class="form-group">
+                    <label>Cantidad de Ganado:</label>
+                    <input type="number" id="edit_cant_ganado" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Tatuaje:</label>
+                    <input type="text" id="edit_tatuaje" required>
+                </div>
+                <div class="form-group">
+                    <label>Estado:</label>
+                    <select id="edit_status" required>
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="deleteConfirmationModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>¿Estás seguro de eliminar esta granja?</h3>
+            <p>Todos los datos asociados serán eliminados permanentemente.</p>
+            <div class="actions">
+                <button onclick="document.getElementById('deleteConfirmationModal').style.display = 'none'">Cancelar</button>
+                <button id="confirmDeleteButton" class="danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        let selectedGranjaId = null;
+
+        function showAddFincaForm() {
+            document.getElementById('addFincaModal').style.display = 'block';
+        }
+
+        document.querySelector('.close').addEventListener('click', () => {
+            document.getElementById('addFincaModal').style.display = 'none';
+        });
+
+        function viewGranja(granjaId) {
+            window.location.href = '/estadisticas?granja_id=' + granjaId;
+        }
+
+        document.getElementById('granjaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                direccion: document.getElementById('direccion').value,
+                cant_ganado: document.getElementById('cant_ganado').value,
+                tatuaje: document.getElementById('tatuaje').value,
+                status: document.getElementById('status').value
+            };
+
+            try {
+                const response = await fetch('/add_granja', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.reload(); // Refresh to show new finca
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Error en la conexión');
+            }
+        });
+
+        function loadGranjaData(granjaId) {
+            fetch(`/get_granja/${granjaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('edit_id').value = data.id;
+                    document.getElementById('edit_direccion').value = data.direccion;
+                    document.getElementById('edit_cant_ganado').value = data.cant_ganado;
+                    document.getElementById('edit_tatuaje').value = data.tatuaje;
+                    document.getElementById('edit_status').value = data.status.toString();
+                    document.getElementById('editGranjaModal').style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Error cargando datos de la granja');
+                });
+        }
+
+        function closeEditModal() {
+            document.getElementById('editGranjaModal').style.display = 'none';
+        }
+
+        document.getElementById('editGranjaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                direccion: document.getElementById('edit_direccion').value,
+                cant_ganado: document.getElementById('edit_cant_ganado').value,
+                tatuaje: document.getElementById('edit_tatuaje').value,
+                status: document.getElementById('edit_status').value,
+            };
+
+            const granjaId = document.getElementById('edit_id').value;
+
+            try {
+                const response = await fetch(`/update_granja/${granjaId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.error || 'Error desconocido'));
+                }
+            } catch (error) {
+                alert('Error en la conexión');
+            }
+        });
+
+        function confirmDeleteGranja(granjaId) {
+            selectedGranjaId = granjaId;
+            document.getElementById('deleteConfirmationModal').style.display = 'block';
+        }
+
+        document.getElementById('confirmDeleteButton').addEventListener('click', async () => {
+            if (!selectedGranjaId) return;
+
+            try {
+                const response = await fetch(`/delete_granja/${selectedGranjaId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.error || 'No se pudo eliminar la granja'));
+                }
+            } catch (error) {
+                alert('Error en la conexión');
+            } finally {
+                document.getElementById('deleteConfirmationModal').style.display = 'none';
+                selectedGranjaId = null;
+            }
+        });
+    </script>
+</body>
 </html>

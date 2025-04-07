@@ -48,11 +48,11 @@
 <body>
     <header>
         <div class="logoContenedor">
-            <img src="static/img/logoCow.png" alt="Muu">
+            <img src="{{ url_for('static', filename='img/logoCow.png') }}" alt="Muu">
             <span>CowTrack</span>
         </div>
         <div class="infoUsuario">
-            <span>Administrador</span>
+            <span>{{ current_user.fullname }}</span>
             <svg color="#FDC410" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor"
                 class="bi bi-person-circle" viewBox="0 0 17 17">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
