@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response, send_file
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
@@ -83,8 +85,24 @@ def estadisticas():
     if not granja:
         flash("Granja no encontrada")
         return redirect(url_for('home'))
+
+    breed_stats = ModelGranja.get_breed_stats(db, granja_id)
+
+    current_year = datetime.now().year
+    monthly_stats = ModelReporte.get_monthly_cattle_stats(db, granja_id, current_year)
+
+    monthly_counts = [0] * 12
+    for month, total in monthly_stats:
+        monthly_counts[month - 1] = total
+
     owner_name = current_user.nombre
-    return render_template('Estadisticas.html', granja=granja, owner_name=owner_name)
+    return render_template(
+        'Estadisticas.html',
+        granja=granja,
+        owner_name=owner_name,
+        monthly_counts=monthly_counts,
+        razas=breed_stats
+    )
 
 @app.route('/header')
 def header():

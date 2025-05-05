@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-04-2025 a las 19:43:16
+-- Tiempo de generación: 17-04-2025 a las 03:40:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -76,7 +76,7 @@ CREATE TABLE `granja` (
 --
 
 INSERT INTO `granja` (`ID_Granja`, `Dirección`, `Cant_Ganado`, `Status`, `Tatuaje`, `ID_Dueño`) VALUES
-(1, 'Avenida', 2, 1, 'herrado1', 1);
+(1, 'Avenida', 2, 1, 'herrado3', 1);
 
 -- --------------------------------------------------------
 
@@ -127,20 +127,21 @@ CREATE TABLE `vacuno` (
   `ID_Arete` varchar(50) NOT NULL,
   `Genero` enum('Macho','Hembra') NOT NULL,
   `Fecha_Nacimiento` date NOT NULL,
+  `Fecha_Registro` date NOT NULL,
   `Raza` varchar(50) NOT NULL,
   `Estado_Salud` enum('Sano','Enfermo') NOT NULL,
-  `Observaciones` text NOT NULL
+  `Proposito` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `vacuno`
 --
 
-INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `Genero`, `Fecha_Nacimiento`, `Raza`, `Estado_Salud`, `Observaciones`) VALUES
-(1, 9, '7sjdf8', 'Macho', '2024-03-12', 'Toro', 'Sano', 'De bajo peso, se requiere mayor alimentación'),
-(2, 12, 'sjak91', 'Hembra', '2024-11-09', 'Vaca', 'Sano', 'Preñada, pronto a dar a luz'),
-(3, 9, '894jYo9P', 'Macho', '2025-03-15', 'Toro', 'Enfermo', 'Desarrolló una infección intestinal'),
-(4, 11, '72JgMNh91', 'Macho', '2025-01-15', 'Toro', 'Enfermo', 'Presenta protuberancias en la zona de la oreja izquierda');
+INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `Genero`, `Fecha_Nacimiento`, `Fecha_Registro`, `Raza`, `Estado_Salud`, `Proposito`) VALUES
+(1, 9, '7sjdf8', 'Macho', '2024-03-12', '2025-04-01', 'Gyr', 'Sano', 'De bajo peso, se requiere mayor alimentación'),
+(2, 12, 'sjak91', 'Hembra', '2024-11-09', '2025-04-10', 'Guzerat', 'Sano', 'Preñada, pronto a dar a luz'),
+(3, 9, '894jYo9P', 'Macho', '2025-03-15', '2025-01-16', 'Guzerat', 'Enfermo', 'Desarrolló una infección intestinal'),
+(4, 11, '72JgMNh91', 'Macho', '2025-01-15', '2025-03-16', 'Brahman', 'Enfermo', 'Presenta protuberancias en la zona de la oreja izquierda');
 
 --
 -- Índices para tablas volcadas
@@ -166,8 +167,7 @@ ALTER TABLE `empleado`
 --
 ALTER TABLE `granja`
   ADD PRIMARY KEY (`ID_Granja`),
-  ADD UNIQUE KEY `ID_Granja` (`ID_Granja`),
-  ADD UNIQUE KEY `ID_Dueño` (`ID_Dueño`);
+  ADD KEY `ID_Dueño` (`ID_Dueño`) USING BTREE;
 
 --
 -- Indices de la tabla `lote`
@@ -211,7 +211,7 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `granja`
 --
 ALTER TABLE `granja`
-  MODIFY `ID_Granja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_Granja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `lote`

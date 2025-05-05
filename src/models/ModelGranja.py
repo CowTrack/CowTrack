@@ -84,3 +84,21 @@ class ModelGranja:
             raise Exception(ex)
         finally:
             cursor.close()
+
+    @classmethod
+    def get_breed_stats(cls, db, granja_id):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                SELECT v.Raza, COUNT(*) as cantidad 
+                FROM vacuno v
+                JOIN lote l ON v.ID_Lote = l.ID_Lote
+                WHERE l.ID_Granja = %s
+                GROUP BY v.Raza
+            """, (granja_id,))
+            result = cursor.fetchall()
+            return {row[0]: row[1] for row in result} if result else {}
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()

@@ -32,3 +32,24 @@ class ModelReporte:
             raise Exception(f"Error getting vacunos: {str(ex)}")
         finally:
             cursor.close()
+
+    @classmethod
+    def get_monthly_cattle_stats(cls, db, granja_id, current_year):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                SELECT 
+                    MONTH(v.Fecha_Registro) AS Month,
+                    COUNT(v.ID_Vaca) AS Total
+                FROM vacuno v
+                JOIN lote l ON v.ID_Lote = l.ID_Lote
+                WHERE l.ID_Granja = %s 
+                AND YEAR(v.Fecha_Registro) = %s
+                GROUP BY Month
+                ORDER BY Month
+            """, (granja_id, current_year))
+            return cursor.fetchall()
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()

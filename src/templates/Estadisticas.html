@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CowTrack - Estadisticas</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
@@ -371,6 +370,9 @@
     let miCanvas2 = document.getElementById("graficaRaza").getContext("2d");
     let miCanvas3 = document.getElementById("graficaEjemplares").getContext("2d");
 
+     const breedData = {{ razas|tojson }};
+     const breedLabels = Object.keys(breedData);
+     const breedValues = Object.values(breedData);
 
     var chart = new Chart(miCanvas1, {
         type: "doughnut",
@@ -409,58 +411,73 @@
     var chart = new Chart(miCanvas2, {
         type: "bar",
         data: {
-            labels: ["Gyr", "Guzerat ", "Simbrah ", "Brangus", "Brahman", "Nelore"],
-            datasets: [
-                {
-                    label: "Cantidad por Raza",
-                    backgroundColor: "#EAC655",
-                    borderColor: "#C2A137",
-                    data: [120, 390, 50, 300, 190, 200],
-                    categoryPercentage: 0.9
-                }
-            ]
+            labels: breedLabels,
+            datasets: [{
+                label: "Cantidad por Raza",
+                backgroundColor: "#EAC655",
+                borderColor: "#C2A137",
+                data: breedValues,
+                categoryPercentage: 0.9
+            }]
         },
         options: {
             plugins: {
                 tooltip: {
-                    enabled: true, // Activar o desactivar
+                    enabled: true,
                     backgroundColor: "#E6E7E7",
                     titleColor: "black",
                     bodyColor: "black",
                     borderWidth: 2,
                     borderColor: "#d3d3d3"
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
             }
         }
-    })
+    });
 
     var chart = new Chart(miCanvas3, {
         type: "line",
         data: {
-            labels: ["Enero", "Febrero ", "Marzo ", "Abril", "Mayo", "Junio", "Julio", "Agosto ", "Septiembre ", "Octubre", "Noviembre", "Diciembre"],
-            datasets: [
-                {
-                    label: "Cantidad de ejemplares",
-                    backgroundColor: "#C2A137",
-                    borderColor: "#C2A137",
-                    data: [120, 390, 50, 300, 190, 200],
-                    categoryPercentage: 0.9
-                }
-            ]
+            labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            datasets: [{
+                label: "Cantidad de ejemplares",
+                backgroundColor: "#C2A137",
+                borderColor: "#C2A137",
+                data: {{ monthly_counts|tojson }},
+                fill: false,
+                tension: 0.4
+            }]
         },
         options: {
+            responsive: true,
             plugins: {
                 tooltip: {
-                    enabled: true, // Activar o desactivar
+                    enabled: true,
                     backgroundColor: "#E6E7E7",
                     titleColor: "black",
                     bodyColor: "black",
                     borderWidth: 2,
                     borderColor: "#d3d3d3"
                 }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
             }
         }
-    })
+    });
 
     function exportToPDF(granjaId) {
         window.location.href = `/exportar_pdf?granja_id=${granjaId}`;
