@@ -299,11 +299,11 @@
 </head>
 
 <body>
-    <iframe class="header" src="header.html" frameborder="0"></iframe>
+    <iframe class="header" src="{{ url_for('header') }}" frameborder="0"></iframe>
 
     <section class="sidebar">
         <div class="contenIzquierdo"> <!-- NO QUITAR-->
-            <button class="icon-button">
+            <button class="icon-button" onclick="window.location.href= '{{ url_for('home') }}'">
                 <span class="tooltip-text">Inicio</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-house-door-fill" viewBox="0 0 20 20">
@@ -312,7 +312,7 @@
                 </svg>
             </button>
 
-            <button class="icon-button">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('estadisticas', granja_id=vacuno[13]) }}'">
                 <span class="tooltip-text">Estadisticas</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-bar-chart-fill" viewBox="0 0 20 20">
@@ -321,7 +321,7 @@
                 </svg>
             </button>
 
-            <button class="icon-button">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_ganado', granja_id=vacuno[13]) }}'">
                 <span class="tooltip-text">Registro Vacuno</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-journals" viewBox="0 0 20 20">
@@ -332,12 +332,20 @@
                 </svg>
             </button>
 
-            <button class="icon-button">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_reportes', granja_id=vacuno[13]) }}'">
                 <span class="tooltip-text">Reportes</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-file-medical-fill" viewBox="0 0 20 20">
                     <path
                         d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M8.5 4.5v.634l.549-.317a.5.5 0 1 1 .5.866L9 6l.549.317a.5.5 0 1 1-.5.866L8.5 6.866V7.5a.5.5 0 0 1-1 0v-.634l-.549.317a.5.5 0 1 1-.5-.866L7 6l-.549-.317a.5.5 0 0 1 .5-.866l.549.317V4.5a.5.5 0 1 1 1 0M5.5 9h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1m0 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1" />
+                </svg>
+            </button>
+
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_lotes', granja_id=vacuno[13]) }}'">
+                <span class="tooltip-text">Lotes</span>
+                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-flag-fill" viewBox="0 0 20 20">
+                    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
                 </svg>
             </button>
         </div>
@@ -373,23 +381,22 @@
     </section>
 
     <section class="encabezado">
-        <span>Nombre de la Finca</span>
+         <span>{{ vacuno[12] }}</span>
     </section>
 
     <!-- Contenido -->
     <div class="container">
         <div class="infoIzquierdo">
             <div class="fotoVaca">
-                <img src="Imagenes/logoCow.png" alt="Foto Perfil">
+                <img src="{{ url_for('static', filename='img/logoCow.png') }}" alt="Foto Perfil">
             </div>
             <div class="info">
-                <p><b>Nombre de la vaca:</b> No especificada <b>Raza:</b> No especificada</p>
-                <p><b>Código:</b> AB-435 <b>Edad:</b> 3 meses</p>
-                
+                <p><b>Nombre:</b> {{ vacuno[4] }} <b>Raza:</b> {{ vacuno[8] }}</p>
+                <p><b>Etiqueta:</b> {{ vacuno[2] }} <b>Edad:</b> {{ vacuno[6]|calcular_edad }}</p>
             </div>
         </div>
         <div class="infoDerecha">
-            <button class="boton-editar">
+            <button class="boton-editar" onclick="window.location.href='#'">
                 <svg color="black" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                     class="bi bi-pencil-fill" viewBox="0 0 14 14">
                     <path
@@ -405,48 +412,36 @@
         <div class="caja">
             <p1 class="encabezadoDATOS">Datos Generales</p1>
             <ul>
-                <li>Genero</li>
-                <li>Proposito</li>
-                <li>Etapa Desarrollo</li>
-                <li>Ganaderia</li>
-                <li>Codigo</li>
+                <li><b>Género:</b> {{ vacuno[5] }}</li>
+                <li><b>Propósito:</b> {{ vacuno[10] }}</li>
+                <li><b>Fecha Nacimiento:</b> {{ vacuno[6].strftime('%d/%m/%Y') }}</li>
+                <li><b>Lote:</b> {{ vacuno[11] }}</li>
+                <li><b>Estado Salud:</b> {{ vacuno[9] }}</li>
             </ul>
-
         </div>
+
         <div class="caja">
-            <p1 class="encabezadoDATOS">Padre y Madre</p1>
+            <p1 class="encabezadoDATOS">Identificación</p1>
             <ul>
-                <li>Genero</li>
-                <li>Codigo</li>
-                <li>Etapa Desarrollo</li>
-                <li>Nacimiento</li>
+                <li><b>Fierro:</b> {{ vacuno[3] }}</li>
+                <li><b>Registro:</b> {{ vacuno[7].strftime('%d/%m/%Y') }}</li>
             </ul>
-
         </div>
+
         <div class="caja">
-            <p1 class="encabezadoDATOS">Datos Medicos</p1>
+            <p1 class="encabezadoDATOS">Reportes</p1>
             <ul>
-                <li>Genero</li>
-                <li>Proposito</li>
-                <li>Etapa Desarrollo</li>
-                <li>Nacimiento</li>
+                {% for reporte in reportes %}
+                <li class="reporte-item">
+                    <b>{{ reporte[2].strftime('%d/%m/%Y') }}</b> - {{ reporte[3] }}
+                    <p class="observacion">{{ reporte[4] }}</p>
+                </li>
+                {% else %}
+                <li>No hay reportes registrados</li>
+                {% endfor %}
             </ul>
-        </div>
-
-        <div class="caja">
-            <div class="parteIzquierda">
-                <p1 class="produccion">Producción</p1>
-                <button class="boton-examinar">Examinar</button>
-            </div>
-
-            <div class="parteDerecha">
-                <p1 class="produccion">Reproducción</p1>
-                <button class="boton-examinar">Examinar</button>
-            </div>
-
         </div>
     </div>
-
 </body>
 
 </html>

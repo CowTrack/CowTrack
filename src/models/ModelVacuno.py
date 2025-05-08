@@ -96,3 +96,24 @@ class ModelVacuno:
         except Exception as ex:
             db.connection.rollback()
             raise Exception(ex)
+
+    @staticmethod
+    def get_vacuno_by_etiqueta(db, etiqueta, owner_id):
+        try:
+            cursor = db.connection.cursor()
+            query = """
+                SELECT 
+                    v.*, 
+                    l.Nombre AS lote_nombre,
+                    g.Dirección AS granja_nombre,
+                    g.ID_Granja
+                FROM vacuno v
+                JOIN lote l ON v.ID_Lote = l.ID_Lote
+                JOIN granja g ON l.ID_Granja = g.ID_Granja
+                WHERE v.ID_Arete = %s 
+                AND g.ID_Dueño = %s
+            """
+            cursor.execute(query, (etiqueta, owner_id))
+            return cursor.fetchone()
+        except Exception as ex:
+            raise Exception(f"Database error: {str(ex)}")

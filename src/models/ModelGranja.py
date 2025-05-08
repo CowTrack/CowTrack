@@ -100,3 +100,23 @@ class ModelGranja:
             raise Exception(ex)
         finally:
             cursor.close()
+
+    @classmethod
+    def get_report_stats(cls, db, granja_id):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                SELECT 
+                    SUM(CASE WHEN r.ID_Reporte IS NOT NULL THEN 1 ELSE 0 END) as with_reports,
+                    SUM(CASE WHEN r.ID_Reporte IS NULL THEN 1 ELSE 0 END) as without_reports
+                FROM vacuno v
+                LEFT JOIN reporte r ON v.ID_Vaca = r.ID_Vaca
+                JOIN lote l ON v.ID_Lote = l.ID_Lote
+                WHERE l.ID_Granja = %s
+            """, (granja_id,))
+            result = cursor.fetchone()
+            return {'with_reports': result[0] or 0, 'without_reports': result[1] or 0}
+        except Exception as ex:
+            raise Exception(ex)
+        finally:
+            cursor.close()

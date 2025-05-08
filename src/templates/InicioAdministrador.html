@@ -7,6 +7,7 @@
     <title>CowTrack - Listado de Fincas</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -109,13 +110,14 @@
         .banner {
             position: relative;
             text-align: center;
-            margin-top: 105px; /* Ajustado para dar espacio al header y sidebar */
+            margin-top: 105px;
             margin-bottom: 20px;
         }
 
         .finca {
             position: relative;
             text-align: center;
+            
         }
 
         .banner img,
@@ -142,7 +144,7 @@
         .search-bar {
             display: flex;
             justify-content: left;
-            margin: 20px 20px 20px 15%;
+            margin: 20px 20px 0 15%;
         }
 
         .search-container {
@@ -182,14 +184,14 @@
             flex-wrap: wrap;
             padding: 20px;
             background-color: #ffffff;
-            margin: 0 auto 60px auto; /* Reducido el margin-bottom */
+            margin: 0 auto 60px auto;
             width: 90%;
             min-height: 300px;
-            position: relative; /* Para posicionamiento de elementos internos */
+            position: relative;
         }
 
         .addFinca {
-            background-color: #d7a86e;
+            background-color: #ffffff;
             padding: 10px;
             border-radius: 18px;
             text-align: center;
@@ -198,18 +200,17 @@
             height: 100px;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
             font-size: 15px;
+        }
+
+        .addFinca {
+            background-color: #d7a86e;
             color: black;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
         }
 
         .addFinca svg {
-            margin-bottom: 5px;
+            padding: 10px;
         }
 
         .finca-info {
@@ -222,22 +223,16 @@
         .actions {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 20px;
             flex-wrap: wrap;
-            margin-top: 10px;
         }
 
         .actions button {
-            padding: 8px 12px;
+            padding: 8px 12px 8px 12px;
             border: none;
             cursor: pointer;
             border-radius: 5px;
             background-color: rgb(235, 235, 235);
-            transition: background-color 0.3s;
-        }
-
-        .actions button:hover {
-            background-color: #d7a86e;
         }
 
         .finca {
@@ -251,7 +246,7 @@
             height: 100px;
             cursor: pointer;
             margin-bottom: 15px;
-            z-index: 1; /* Para que el tooltip se muestre correctamente */
+            z-index: 1;
         }
 
         .tooltip {
@@ -263,13 +258,14 @@
             border-radius: 18px;
             padding: 10px;
             position: absolute;
-            z-index: 1001; /* Mayor que cuerpoPagina para que aparezca encima */
+            z-index: 1001;
             width: 220px;
-            top: 105px; /* Ajustado para que se vea completo */
+            top: 105px;
             left: 50%;
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s;
+
         }
 
         .finca:hover .tooltip {
@@ -279,21 +275,9 @@
 
         .finca h3 {
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
             color: #000000;
-            margin: 5px 0;
-        }
-
-        .tooltip h3 {
-            margin-top: 0;
-            font-size: 18px;
-        }
-
-        .tooltip p {
-            margin: 5px 0;
-            text-align: left;
-            padding-left: 10px;
         }
 
         .danger {
@@ -318,26 +302,14 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .modal-content {
             background: white;
             padding: 20px;
             width: 400px;
-            max-width: 90%;
+            margin: 50px auto;
             border-radius: 8px;
-            position: relative;
-        }
-
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
         }
 
         .form-group {
@@ -347,7 +319,6 @@
         .form-group label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
         }
 
         .form-group input, .form-group select {
@@ -355,10 +326,9 @@
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box;
         }
 
-        .form-group input:focus, .form-group select:focus {
+                .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #d7a86e;
         }
@@ -463,8 +433,7 @@
                     class="bi bi-plus-lg" viewBox="0 0 15 15">
                     <path fill-rule="evenodd"
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-                </svg>
-                <span>Agregar finca</span>
+                </svg>Agregar finca
             </div>
 
         {% for granja in granjas %}
@@ -490,8 +459,7 @@
 
         <div id="addFincaModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <span class="close" onclick="closeAddModal()">&times;</span>
-                <h2>Agregar Nueva Finca</h2>
+                <span class="close">&times;</span>
                 <form id="granjaForm">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
@@ -537,7 +505,6 @@
 
     <div id="deleteConfirmationModal" class="modal" style="display: none;">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('deleteConfirmationModal').style.display = 'none'">&times;</span>
             <h3>¿Estás seguro de eliminar esta granja?</h3>
             <p>Todos los datos asociados serán eliminados permanentemente.</p>
             <div class="actions">
@@ -548,6 +515,7 @@
     </div>
 
     <script>
+
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         let selectedGranjaId = null;
 
@@ -555,9 +523,9 @@
             document.getElementById('addFincaModal').style.display = 'block';
         }
 
-        function closeAddModal() {
+        document.querySelector('.close').addEventListener('click', () => {
             document.getElementById('addFincaModal').style.display = 'none';
-        }
+        });
 
         function viewGranja(granjaId) {
             window.location.href = '/estadisticas?granja_id=' + granjaId;
@@ -568,7 +536,6 @@
             const formData = {
                 direccion: document.getElementById('direccion').value,
                 tatuaje: document.getElementById('tatuaje').value,
-                status: 1 // Por defecto activo
             };
 
             try {
@@ -671,23 +638,6 @@
                 document.getElementById('deleteConfirmationModal').style.display = 'none';
                 selectedGranjaId = null;
             }
-        });
-
-        // Función para filtrar fincas con el buscador
-        document.querySelector('.search-container input').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const fincas = document.querySelectorAll('.finca');
-
-            fincas.forEach(finca => {
-                const fincaName = finca.querySelector('h3').textContent.toLowerCase();
-                const fincaInfo = finca.querySelector('.tooltip').textContent.toLowerCase();
-
-                if (fincaName.includes(searchTerm) || fincaInfo.includes(searchTerm)) {
-                    finca.style.display = 'block';
-                } else {
-                    finca.style.display = 'none';
-                }
-            });
         });
     </script>
 </body>

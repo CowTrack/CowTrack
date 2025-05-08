@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2025 a las 07:16:51
+-- Tiempo de generación: 08-05-2025 a las 16:02:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -77,7 +77,9 @@ CREATE TABLE `granja` (
 --
 
 INSERT INTO `granja` (`ID_Granja`, `Dirección`, `Cant_Ganado`, `Status`, `Tatuaje`, `ID_Dueño`) VALUES
-(1, 'Avenida', 2, 1, 'herrado3', 1);
+(1, 'Avenida', 9, 1, 'herrado3', 1),
+(4, 'Avenida', 0, 1, 'herrado2', 1),
+(5, 'Avenida', 0, 1, 'herrado1', 1);
 
 -- --------------------------------------------------------
 
@@ -87,6 +89,7 @@ INSERT INTO `granja` (`ID_Granja`, `Dirección`, `Cant_Ganado`, `Status`, `Tatua
 
 CREATE TABLE `lote` (
   `ID_Lote` int(11) NOT NULL,
+  `Nombre` varchar(50) NOT NULL,
   `Fecha_Registro` date NOT NULL,
   `Cant_Vacuno` int(11) NOT NULL,
   `Status` tinyint(1) NOT NULL,
@@ -97,13 +100,14 @@ CREATE TABLE `lote` (
 -- Volcado de datos para la tabla `lote`
 --
 
-INSERT INTO `lote` (`ID_Lote`, `Fecha_Registro`, `Cant_Vacuno`, `Status`, `ID_Granja`) VALUES
-(9, '2025-03-08', 2, 1, 1),
-(10, '2025-03-10', 8, 1, 1),
-(11, '2025-03-14', 3, 1, 1),
-(12, '2025-03-16', 2, 0, 1),
-(13, '2025-03-17', 2, 1, 1),
-(14, '2025-05-07', 1, 1, 1);
+INSERT INTO `lote` (`ID_Lote`, `Nombre`, `Fecha_Registro`, `Cant_Vacuno`, `Status`, `ID_Granja`) VALUES
+(9, 'A', '2025-03-08', 2, 1, 1),
+(10, 'B', '2025-03-10', 4, 1, 1),
+(11, 'C', '2025-03-14', 1, 1, 1),
+(12, 'D', '2025-03-16', 1, 0, 1),
+(13, 'F', '2025-03-17', 0, 1, 1),
+(14, 'G', '2025-05-07', 1, 1, 1),
+(16, 'E', '2025-05-08', 0, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -148,6 +152,7 @@ CREATE TABLE `vacuno` (
   `ID_Lote` int(11) NOT NULL,
   `ID_Arete` varchar(50) NOT NULL,
   `ID_Fierro` varchar(50) NOT NULL,
+  `Nombre` varchar(50) NOT NULL,
   `Genero` enum('Macho','Hembra') NOT NULL,
   `Fecha_Nacimiento` date NOT NULL,
   `Fecha_Registro` date NOT NULL,
@@ -160,16 +165,16 @@ CREATE TABLE `vacuno` (
 -- Volcado de datos para la tabla `vacuno`
 --
 
-INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `ID_Fierro`, `Genero`, `Fecha_Nacimiento`, `Fecha_Registro`, `Raza`, `Estado_Salud`, `Proposito`) VALUES
-(1, 9, '7sjdf8', 'CD-738', 'Macho', '2024-03-12', '2025-04-01', 'Gyr', 'Sano', 'Carne'),
-(2, 12, 'sjak91', 'KJ-234', 'Hembra', '2024-11-09', '2025-04-10', 'Guzerat', 'Sano', 'Lechera'),
-(3, 9, '894jYo9P', 'LM-111', 'Macho', '2025-01-04', '2025-04-09', 'Guzerat', 'Enfermo', 'Carne'),
-(8, 11, '9jsu2', 'CD-543', 'Hembra', '2024-03-14', '2025-04-09', 'Brahman', 'Sano', 'Lechera'),
-(9, 14, '3jak91', 'LZ-230', 'Macho', '2022-06-07', '2025-05-07', 'Suizo americano', 'Sano', 'Fin zootecnico'),
-(11, 10, '22222', 'MA-234', 'Macho', '2025-01-01', '2025-05-07', 'Brahman', 'Sano', 'Carne'),
-(12, 10, '5kjlp1', 'GF-000', 'Hembra', '2025-03-17', '2025-05-07', 'Guzerat', 'Sano', 'Reproductora'),
-(13, 10, 'lp23rt', 'KL397', 'Hembra', '2025-05-02', '2025-05-07', 'Simbrah', 'Sano', 'Reproductora'),
-(14, 10, '12345', 'XS-123', 'Macho', '2024-11-21', '2025-05-07', 'Gyr', 'Sano', 'Carne');
+INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `ID_Fierro`, `Nombre`, `Genero`, `Fecha_Nacimiento`, `Fecha_Registro`, `Raza`, `Estado_Salud`, `Proposito`) VALUES
+(1, 9, '7sjdf8', 'CD-738', 'Bull-E', 'Macho', '2024-03-12', '2025-04-01', 'Gyr', 'Sano', 'Carne'),
+(2, 12, 'sjak91', 'KJ-234', 'Claudina', 'Hembra', '2024-11-09', '2025-04-10', 'Guzerat', 'Sano', 'Lechera'),
+(3, 9, '894jYo9P', 'LM-111', 'Rogelio', 'Macho', '2025-01-04', '2025-04-09', 'Guzerat', 'Enfermo', 'Carne'),
+(8, 11, '9jsu2', 'CD-543', 'Leslie', 'Hembra', '2024-03-14', '2025-04-09', 'Brahman', 'Sano', 'Lechera'),
+(9, 14, '3jak91', 'LZ-230', 'Mordo', 'Macho', '2022-06-07', '2025-05-07', 'Suizo americano', 'Sano', 'Fin zootecnico'),
+(11, 10, '22222', 'MA-234', 'MIguel', 'Macho', '2025-01-01', '2025-05-07', 'Brahman', 'Sano', 'Carne'),
+(12, 10, '5kjlp1', 'GF-000', 'Betty', 'Hembra', '2025-03-17', '2025-05-07', 'Guzerat', 'Sano', 'Reproductora'),
+(13, 10, 'lp23rt', 'KL397', 'Berta', 'Hembra', '2025-05-02', '2025-05-07', 'Simbrah', 'Sano', 'Reproductora'),
+(14, 10, '12345', 'XS-123', 'Saul', 'Macho', '2024-11-21', '2025-05-07', 'Gyr', 'Sano', 'Carne');
 
 --
 -- Índices para tablas volcadas
@@ -247,13 +252,13 @@ ALTER TABLE `empleado`
 -- AUTO_INCREMENT de la tabla `granja`
 --
 ALTER TABLE `granja`
-  MODIFY `ID_Granja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `ID_Granja` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `lote`
 --
 ALTER TABLE `lote`
-  MODIFY `ID_Lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ID_Lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
@@ -271,7 +276,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `vacuno`
 --
 ALTER TABLE `vacuno`
-  MODIFY `ID_Vaca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ID_Vaca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Restricciones para tablas volcadas

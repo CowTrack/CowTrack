@@ -133,3 +133,17 @@ class ModelReporte:
         except Exception as ex:
             db.connection.rollback()
             raise Exception(ex)
+
+    @staticmethod
+    def get_reportes_by_vaca(db, vaca_id):
+        try:
+            cursor = db.connection.cursor()
+            query = """
+                SELECT * FROM reporte 
+                WHERE ID_Vaca = %s
+                ORDER BY Fecha_Reporte DESC
+            """
+            cursor.execute(query, (vaca_id,))
+            return cursor.fetchall()
+        except Exception as ex:
+            raise Exception(ex)

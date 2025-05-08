@@ -104,13 +104,22 @@ def estadisticas():
     for month, total in monthly_stats:
         monthly_counts[month - 1] = total
 
+    report_stats = ModelGranja.get_report_stats(db, granja_id)
+    total = report_stats['with_reports'] + report_stats['without_reports']
+    report_percent = round((report_stats['with_reports'] / total * 100)) if total > 0 else 0
+
     owner_name = current_user.nombre
     return render_template(
         'Estadisticas.html',
         granja=granja,
         owner_name=owner_name,
         monthly_counts=monthly_counts,
-        razas=breed_stats
+        razas=breed_stats,
+        report_percent=report_percent,
+        report_data=[
+            report_stats['with_reports'],
+            report_stats['without_reports']
+        ]
     )
 
 @app.route('/header')
@@ -134,8 +143,8 @@ def add_granja():
         ModelGranja.create_granja(
             db=db,
             direccion=data['direccion'],
-            cant_ganado=int(data['cant_ganado']),
-            status=int(data['status']),
+            cant_ganado=0,
+            status=1,
             tatuaje=data['tatuaje'],
             id_dueño=current_user.id
         )
@@ -157,6 +166,7 @@ def get_granja(granja_id):
         return jsonify({
             'id': granja[0],
             'direccion': granja[1],
+            'cant_ganado': granja[2],
             'status': granja[3],
             'tatuaje': granja[4]
         })
@@ -301,27 +311,6 @@ def eliminar_vacuno():
 
     except Exception as ex:
         app.logger.error(f"Error deleting cattle: {str(ex)}")
-        return jsonify({'success': False, 'error': str(ex)}), 500
-
-
-@app.route('/crear_lote', methods=['POST'])
-@login_required
-def crear_lote():
-    try:
-        granja_id = request.args.get('granja_id')
-
-        # Verify farm ownership
-        granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
-        if not granja:
-            return jsonify({'success': False, 'error': 'Granja no encontrada'}), 404
-
-        # Create new lote
-        ModelLote.create_lote(db, granja_id)
-
-        return jsonify({'success': True})
-
-    except Exception as ex:
-        app.logger.error(f"Error creating lote: {str(ex)}")
         return jsonify({'success': False, 'error': str(ex)}), 500
 
 @app.route('/exportar_pdf')
@@ -548,6 +537,120 @@ def eliminar_reporte():
 
         if not deleted:
             return jsonify({'success': False, 'error': 'Reporte no encontrado o no autorizado'}), 404
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/informacion_vaca')
+@login_required
+def informacion_vaca():
+    etiqueta = request.args.get('etiqueta')
+    if not etiqueta:
+        flash("Falta el parámetro de etiqueta")
+        return redirect(url_for('home'))
+
+    try:
+        vacuno = ModelVacuno.get_vacuno_by_etiqueta(db, etiqueta, current_user.id)
+
+        if not vacuno:
+            flash("Vaca no encontrada o no tienes permisos")
+            return redirect(url_for('home'))
+
+        # Get reports
+        reportes = ModelReporte.get_reportes_by_vaca(db, vacuno[0])  # [0] = ID_Vaca
+
+        return render_template('InformacionVaca.html',
+                               vacuno=vacuno,
+                               reportes=reportes,
+                               calcular_edad=calcular_edad)
+
+    except Exception as ex:
+        flash(f"Error al cargar datos: {str(ex)}")
+        app.logger.error(f"Error en informacion_vaca: {str(ex)}")
+        return redirect(url_for('gestion_ganado'))
+
+
+@app.route('/gestion_lotes')
+@login_required
+def gestion_lotes():
+    granja_id = request.args.get('granja_id')
+    granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+
+    if not granja:
+        flash("Granja no encontrada")
+        return redirect(url_for('home'))
+
+    lotes = ModelLote.get_lotes_by_granja(db, granja_id)
+    return render_template('GestionLotes.html',
+                           granja=granja,
+                           lotes=lotes)
+
+
+@app.route('/crear_lote', methods=['POST'])
+@login_required
+def crear_lote():
+    try:
+        data = request.get_json()
+        granja_id = data.get('granja_id')
+
+        # Verify farm ownership
+        granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+        if not granja:
+            return jsonify({'success': False, 'error': 'Granja no encontrada'}), 404
+
+        # Create new lote
+        lote_id = ModelLote.create_lote(
+            db=db,
+            nombre=data['nombre'],
+            granja_id=granja_id
+        )
+
+        return jsonify({'success': True, 'lote_id': lote_id})
+
+    except Exception as ex:
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/eliminar_lote', methods=['POST'])
+@login_required
+def eliminar_lote():
+    try:
+        data = request.get_json()
+        lote_id = data.get('lote_id')
+
+        deleted = ModelLote.delete_lote(
+            db=db,
+            lote_id=lote_id,
+            owner_id=current_user.id
+        )
+
+        if not deleted:
+            return jsonify({'success': False, 'error': 'Lote no encontrado'}), 404
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/cambiar_estado_lote', methods=['POST'])
+@login_required
+def cambiar_estado_lote():
+    try:
+        data = request.get_json()
+        lote_id = data.get('lote_id')
+
+        success = ModelLote.toggle_status(
+            db=db,
+            lote_id=lote_id,
+            owner_id=current_user.id
+        )
+
+        if not success:
+            return jsonify({'success': False, 'error': 'Lote no encontrado'}), 404
 
         return jsonify({'success': True})
 

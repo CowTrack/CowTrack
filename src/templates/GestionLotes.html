@@ -284,10 +284,10 @@
             margin: 3% auto;
             padding: 0px;
             position: fixed;
-            left: 33%;
+            left: 40%;
             top: 20%;
             border-radius: 14px;
-            width: 500px;
+            width: 350px;
             max-width: 90%;
             font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
         }
@@ -318,16 +318,22 @@
         }
 
         .modal-body form input[type="text"] {
-            width: 90%;
-            height: 27px;
+            width: 80%;
             border: none;
-            border: 1px solid #f4a261;
-            border-radius: 10px;
+            border-bottom: 1px solid #f4a261;
             margin-bottom: 3px;
             padding: 5px;
             outline: none;
             font-size: 14px;
         }
+
+        .acciones-compartir,
+        #formGanado p {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 30px;
+        }
+
 
         .boton-final {
             text-align: center;
@@ -352,44 +358,42 @@
         }
 
         .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 15px 20px;
             padding: 0px 40px;
         }
 
-
-        .form-grid select, input[type="date"]{
-            width: 190px;
-            padding: 10px 12px;
-            border: 1px solid #f4a261;
-            border-radius: 12px;
-            font-size: 14px;
-            background-color: #fff8f2;
-            color: #333;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            appearance: none;
-            /* Quita flecha nativa */
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23666' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 12px;
+        .btn-estado {
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 110px;
         }
 
-        input[type="date"]{
-            width: 160px;
+        .btn-estado.activo {
+            background-color: #4CAF50; /* Green */
+            color: white;
         }
 
-        /* Hover y focus */
-        select:hover,
-        select:focus, 
-        input[type="date"]:hover,
-        input[type="date"]:focus  {
-            border-color: #e76f51;
-            box-shadow: 0 0 5px rgba(231, 111, 81, 0.4);
+        .btn-estado.inactivo {
+            background-color: #f44336; /* Red */
+            color: white;
         }
 
+        .btn-estado:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        /* Adjust action cell width */
+        td:last-child {
+            width: 120px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -416,7 +420,7 @@
                 </svg>
             </button>
 
-            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_ganado', granja_id=granja[0]) }}'">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_ganado', granja_id=granja[0]) }}'" >
                 <span class="tooltip-text">Registro Vacuno</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-journals" viewBox="0 0 20 20">
@@ -427,11 +431,12 @@
                 </svg>
             </button>
 
-            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_lotes', granja_id=granja[0]) }}'">
-                <span class="tooltip-text">Lotes</span>
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_reportes', granja_id=granja[0]) }}'">
+                <span class="tooltip-text">Reportes</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-flag-fill" viewBox="0 0 20 20">
-                    <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
+                    class="bi bi-file-medical-fill" viewBox="0 0 20 20">
+                    <path
+                        d="M12 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2M8.5 4.5v.634l.549-.317a.5.5 0 1 1 .5.866L9 6l.549.317a.5.5 0 1 1-.5.866L8.5 6.866V7.5a.5.5 0 0 1-1 0v-.634l-.549.317a.5.5 0 1 1-.5-.866L7 6l-.549-.317a.5.5 0 0 1 .5-.866l.549.317V4.5a.5.5 0 1 1 1 0M5.5 9h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1m0 2h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1" />
                 </svg>
             </button>
         </div>
@@ -445,8 +450,8 @@
                         d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
                 </svg>
             </button>
-            <button class="icon-button">
-                <span class="tooltip-text" onclick="window.location.href= '{{ url_for('logout') }}'">Cerrar Sesión</span>
+            <button class="icon-button" onclick="window.location.href='{{ url_for('logout') }}'">
+                <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-box-arrow-right" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -459,17 +464,16 @@
     </section>
 
     <section class="encabezado">
-        <span>Nombre de la Finca</span>
+        <span>{{ granja[1] }}</span>
     </section>
 
     <!-- Contenido -->
     <div class="container">
-        <h2>Gestión de Reportes</h2>
+        <h2>Gestión de los Lotes</h2>
 
 
         <div class="search-add-container">
-            <input type="search" id="busqueda" placeholder="Buscar vaca">
-
+            <input type="search" id="busqueda" placeholder="Buscar lote">
 
             <button class="btnNRegistro">
                 <svg color="black" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
@@ -477,7 +481,7 @@
                     <path fill-rule="evenodd"
                         d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                 </svg>
-                Nuevo Reporte
+                Nuevo Lote
             </button>
         </div>
 
@@ -485,42 +489,21 @@
         <div id="modalRegistro" class="modal">
             <div class="modal-contenido">
                 <div class="modal-header">
-                    <h1>Nuevo Reporte de ganado</h1>
+                    <h1>Nuevo Registro de Lote</h1>
                 </div>
                 <div class="modal-body">
-                    <h3>Ingrese los datos solicitados del reporte:</h3>
-                    <form id="formGanado">
+                    <h3>Ingrese el dato solicitado del lote:</h3>
+                    <form id="formLote">
                         <div class="form-grid">
                             <div>
-                                <label>Etiqueta:</label>
-                                <input type="text" name="etiqueta" id="etiqueta" required />
-                            </div>
-
-                            <div>
-                                <label for="fechaRegisReporte">Fecha de reporte:</label>
-                                <input type="date" id="fechaRegisReporte" name="fechaNacimiento" required />
-                            </div>
-
-                            <div>
-                                <label for="tipoReporte">Tipo de reporte:</label>
-                                <select name="tipoReporte" id="tipoReporte" required>
-                                    <option value="">Selecciona una opción</option>
-                                    <option value="Diagnóstico">Diagnóstico</option>
-                                    <option value="Reproductivo">Reproductivo</option>
-                                    <option value="Vacunación">Vacunación</option>
-                                    <option value="Tratamiento">Tratamiento</option>
-                                    <option value="Nutricional">Nutricional</option>
-                                    <option value="Necropsia">Necropsia</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Observación:</label>
-                                <input type="text" name="observacion" id="observacion" required />
+                                <label>Nombre:</label>
+                                <input type="text" name="etiqueta" required />
                             </div>
 
                             
                         </div>
-                         <input type="hidden" name="granja_id" value="{{ granja[0] }}">
+                        
+
                         <div class="boton-final">
                             <button type="submit" class="generar-btn">Generar</button>
                         </div>
@@ -529,35 +512,37 @@
             </div>
         </div>
 
-        <table id="tablaGanado" class="display" style="width:100%">
+        <table id="tablaLote" class="display" style="width:100%">
             <thead>
                 <tr>
-                    <th>Etiqueta</th>
-                    <th>Fecha del reporte</th>
-                    <th>Tipo de reporte</th>
-                    <th>Observación</th>
+                    <th>ID_Lote</th>
+                    <th>Nombre</th>
+                    <th>Fecha de Registro</th>
+                    <th>Cantidad Vacuno</th>
+                    <th>Estado</th>
                     <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
-                {% for reporte in reportes %}
+                {% for lote in lotes %}
                 <tr>
-                    <td>{{ reporte[1] }}</td>
-                    <td>{{ reporte[2] }}</td>
-                    <td>{{ reporte[3] }}</td>
-                    <td>{{ reporte[4] }}</td>
+                    <td>{{ lote[0] }}</td>
+                    <td>{{ lote[1] }}</td>
+                    <td>{{ lote[2].strftime('%Y-%m-%d') }}</td>
+                    <td>{{ lote[3] }} Ejemplares</td>
                     <td>
-                        <button class="btn-examinar" onclick="window.location.href='{{ url_for('informacion_vaca', etiqueta=reporte[1]) }}'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
+                        <button class="btn-estado {{ 'activo' if lote[4] else 'inactivo' }}"
+                                data-lote-id="{{ lote[0] }}"
+                                onclick="cambiarEstado({{ lote[0] }})">
+                            {{ 'Habilitado' if lote[4] else 'Deshabilitado' }}
                         </button>
-                        <button class="btn-eliminar" data-id="{{ reporte[0] }}">
+                    </td>
+                    <td>
+                        <button class="btn-eliminar" onclick="eliminarLote({{ lote[0] }})">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                <path
+                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
                             </svg>
                         </button>
                     </td>
@@ -575,7 +560,7 @@
         const btnNuevo = document.querySelector(".btnNRegistro");
 
         $(document).ready(function () {
-            const table = $('#tablaGanado').DataTable({
+            const table = $('#tablaLote').DataTable({
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-MX.json"
                 },
@@ -589,7 +574,6 @@
             });
         });
 
-
         btnNuevo.addEventListener("click", () => {
             modal.style.display = "block";
         });
@@ -601,19 +585,14 @@
             }
         };
 
-        // Puedes agregar lógica al enviar el formulario
-        document.getElementById("formGanado").addEventListener("submit", function(e) {
+        document.getElementById("formLote").addEventListener("submit", function (e) {
             e.preventDefault();
-
             const formData = {
-                etiqueta: document.getElementById("etiqueta").value,
-                fecha_reporte: document.getElementById("fechaRegisReporte").value,
-                tipo_reporte: document.getElementById("tipoReporte").value,
-                observacion: document.getElementById("observacion").value,
-                granja_id: "{{ granja[0] }}"
+                nombre: document.querySelector('input[name="etiqueta"]').value,
+                granja_id: {{ granja[0] }}
             };
 
-            fetch("{{ url_for('crear_reporte') }}", {
+            fetch('{{ url_for('crear_lote') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -624,50 +603,56 @@
             .then(response => response.json())
             .then(data => {
                 if(data.success) {
-                    alert("Reporte creado exitosamente");
-                    window.location.reload();
+                    location.reload(); // Refresh to show new lote
                 } else {
-                    alert("Error: " + (data.error || 'Error al crear reporte'));
+                    alert('Error: ' + data.error);
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Error de conexión");
-            })
-            .finally(() => {
-                modal.style.display = "none";
-            });
+            .catch(error => console.error('Error:', error));
         });
 
-        document.querySelectorAll('.btn-eliminar').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const reporteId = button.dataset.id;
+        function eliminarLote(loteId) {
+            if(confirm('¿Está seguro de eliminar este lote?')) {
+                fetch('{{ url_for('eliminar_lote') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ lote_id: loteId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                });
+            }
+        }
 
-                if(confirm('¿Está seguro que desea eliminar este reporte?')) {
-                    fetch("{{ url_for('eliminar_reporte') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ reporte_id: reporteId })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if(data.success) {
-                            alert('Reporte eliminado correctamente');
-                            window.location.reload();
-                        } else {
-                            alert('Error: ' + (data.error || 'Error al eliminar'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Error de conexión');
-                    });
-                }
-            });
-        });
+        function cambiarEstado(loteId) {
+            if(confirm('¿Está seguro de cambiar el estado del lote?')) {
+                fetch('{{ url_for('cambiar_estado_lote') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ lote_id: loteId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        location.reload(); // Refresh to show new status
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
     </script>
 
 </body>
