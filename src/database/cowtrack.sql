@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-04-2025 a las 03:40:11
+-- Tiempo de generación: 08-05-2025 a las 07:16:51
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -39,7 +39,8 @@ CREATE TABLE `dueño` (
 --
 
 INSERT INTO `dueño` (`ID_Dueno`, `Nombre`, `correo`, `password`) VALUES
-(1, 'Alex', 'al062587@uacam.mx', 'scrypt:32768:8:1$x77FPYdGrZiA01nS$932ee18aaba33ae3bad197fcfcbcb6b1f19dbcdf125d39f5cd2b95d7be139a8a231bfb3edaf0ced597b5419f32b31c1a7a1517c301f68ed2fd79701350e2821c');
+(1, 'Alex', 'al062587@uacam.mx', 'scrypt:32768:8:1$x77FPYdGrZiA01nS$932ee18aaba33ae3bad197fcfcbcb6b1f19dbcdf125d39f5cd2b95d7be139a8a231bfb3edaf0ced597b5419f32b31c1a7a1517c301f68ed2fd79701350e2821c'),
+(2, 'Kevin', 'saraviakex@gmail.com', 'scrypt:32768:8:1$x77FPYdGrZiA01nS$932ee18aaba33ae3bad197fcfcbcb6b1f19dbcdf125d39f5cd2b95d7be139a8a231bfb3edaf0ced597b5419f32b31c1a7a1517c301f68ed2fd79701350e2821c');
 
 -- --------------------------------------------------------
 
@@ -87,7 +88,6 @@ INSERT INTO `granja` (`ID_Granja`, `Dirección`, `Cant_Ganado`, `Status`, `Tatua
 CREATE TABLE `lote` (
   `ID_Lote` int(11) NOT NULL,
   `Fecha_Registro` date NOT NULL,
-  `Herraje` varchar(100) NOT NULL,
   `Cant_Vacuno` int(11) NOT NULL,
   `Status` tinyint(1) NOT NULL,
   `ID_Granja` int(11) NOT NULL
@@ -97,12 +97,34 @@ CREATE TABLE `lote` (
 -- Volcado de datos para la tabla `lote`
 --
 
-INSERT INTO `lote` (`ID_Lote`, `Fecha_Registro`, `Herraje`, `Cant_Vacuno`, `Status`, `ID_Granja`) VALUES
-(9, '2025-03-08', 'herrado1', 2, 1, 1),
-(10, '2025-03-10', 'herrado2', 3, 1, 1),
-(11, '2025-03-14', 'herrado3', 3, 1, 1),
-(12, '2025-03-16', 'herrado2', 2, 0, 1),
-(13, '2025-03-17', 'herrado1', 2, 1, 1);
+INSERT INTO `lote` (`ID_Lote`, `Fecha_Registro`, `Cant_Vacuno`, `Status`, `ID_Granja`) VALUES
+(9, '2025-03-08', 2, 1, 1),
+(10, '2025-03-10', 8, 1, 1),
+(11, '2025-03-14', 3, 1, 1),
+(12, '2025-03-16', 2, 0, 1),
+(13, '2025-03-17', 2, 1, 1),
+(14, '2025-05-07', 1, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `reporte`
+--
+
+CREATE TABLE `reporte` (
+  `ID_Reporte` int(11) NOT NULL,
+  `ID_Vaca` int(11) NOT NULL,
+  `Fecha_Reporte` date NOT NULL,
+  `Tipo_Reporte` varchar(50) NOT NULL,
+  `Observacion` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `reporte`
+--
+
+INSERT INTO `reporte` (`ID_Reporte`, `ID_Vaca`, `Fecha_Reporte`, `Tipo_Reporte`, `Observacion`) VALUES
+(1, 3, '2025-05-07', 'Diagnóstico', 'El vacuno presenta manchas en la zona de la pata delantera derecha');
 
 -- --------------------------------------------------------
 
@@ -125,6 +147,7 @@ CREATE TABLE `vacuno` (
   `ID_Vaca` int(11) NOT NULL,
   `ID_Lote` int(11) NOT NULL,
   `ID_Arete` varchar(50) NOT NULL,
+  `ID_Fierro` varchar(50) NOT NULL,
   `Genero` enum('Macho','Hembra') NOT NULL,
   `Fecha_Nacimiento` date NOT NULL,
   `Fecha_Registro` date NOT NULL,
@@ -137,11 +160,16 @@ CREATE TABLE `vacuno` (
 -- Volcado de datos para la tabla `vacuno`
 --
 
-INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `Genero`, `Fecha_Nacimiento`, `Fecha_Registro`, `Raza`, `Estado_Salud`, `Proposito`) VALUES
-(1, 9, '7sjdf8', 'Macho', '2024-03-12', '2025-04-01', 'Gyr', 'Sano', 'De bajo peso, se requiere mayor alimentación'),
-(2, 12, 'sjak91', 'Hembra', '2024-11-09', '2025-04-10', 'Guzerat', 'Sano', 'Preñada, pronto a dar a luz'),
-(3, 9, '894jYo9P', 'Macho', '2025-03-15', '2025-01-16', 'Guzerat', 'Enfermo', 'Desarrolló una infección intestinal'),
-(4, 11, '72JgMNh91', 'Macho', '2025-01-15', '2025-03-16', 'Brahman', 'Enfermo', 'Presenta protuberancias en la zona de la oreja izquierda');
+INSERT INTO `vacuno` (`ID_Vaca`, `ID_Lote`, `ID_Arete`, `ID_Fierro`, `Genero`, `Fecha_Nacimiento`, `Fecha_Registro`, `Raza`, `Estado_Salud`, `Proposito`) VALUES
+(1, 9, '7sjdf8', 'CD-738', 'Macho', '2024-03-12', '2025-04-01', 'Gyr', 'Sano', 'Carne'),
+(2, 12, 'sjak91', 'KJ-234', 'Hembra', '2024-11-09', '2025-04-10', 'Guzerat', 'Sano', 'Lechera'),
+(3, 9, '894jYo9P', 'LM-111', 'Macho', '2025-01-04', '2025-04-09', 'Guzerat', 'Enfermo', 'Carne'),
+(8, 11, '9jsu2', 'CD-543', 'Hembra', '2024-03-14', '2025-04-09', 'Brahman', 'Sano', 'Lechera'),
+(9, 14, '3jak91', 'LZ-230', 'Macho', '2022-06-07', '2025-05-07', 'Suizo americano', 'Sano', 'Fin zootecnico'),
+(11, 10, '22222', 'MA-234', 'Macho', '2025-01-01', '2025-05-07', 'Brahman', 'Sano', 'Carne'),
+(12, 10, '5kjlp1', 'GF-000', 'Hembra', '2025-03-17', '2025-05-07', 'Guzerat', 'Sano', 'Reproductora'),
+(13, 10, 'lp23rt', 'KL397', 'Hembra', '2025-05-02', '2025-05-07', 'Simbrah', 'Sano', 'Reproductora'),
+(14, 10, '12345', 'XS-123', 'Macho', '2024-11-21', '2025-05-07', 'Gyr', 'Sano', 'Carne');
 
 --
 -- Índices para tablas volcadas
@@ -178,6 +206,13 @@ ALTER TABLE `lote`
   ADD KEY `ID_Granja` (`ID_Granja`) USING BTREE;
 
 --
+-- Indices de la tabla `reporte`
+--
+ALTER TABLE `reporte`
+  ADD PRIMARY KEY (`ID_Reporte`),
+  ADD KEY `ID_Vaca` (`ID_Vaca`);
+
+--
 -- Indices de la tabla `rol`
 --
 ALTER TABLE `rol`
@@ -189,6 +224,7 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `vacuno`
   ADD PRIMARY KEY (`ID_Vaca`),
+  ADD UNIQUE KEY `ID_Arete` (`ID_Arete`),
   ADD KEY `ID_Lote` (`ID_Lote`) USING BTREE;
 
 --
@@ -199,7 +235,7 @@ ALTER TABLE `vacuno`
 -- AUTO_INCREMENT de la tabla `dueño`
 --
 ALTER TABLE `dueño`
-  MODIFY `ID_Dueno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID_Dueno` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `empleado`
@@ -217,7 +253,13 @@ ALTER TABLE `granja`
 -- AUTO_INCREMENT de la tabla `lote`
 --
 ALTER TABLE `lote`
-  MODIFY `ID_Lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `ID_Lote` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de la tabla `reporte`
+--
+ALTER TABLE `reporte`
+  MODIFY `ID_Reporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -229,7 +271,7 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `vacuno`
 --
 ALTER TABLE `vacuno`
-  MODIFY `ID_Vaca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID_Vaca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Restricciones para tablas volcadas
@@ -253,6 +295,12 @@ ALTER TABLE `granja`
 --
 ALTER TABLE `lote`
   ADD CONSTRAINT `lote_ibfk_1` FOREIGN KEY (`ID_Granja`) REFERENCES `granja` (`ID_Granja`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `reporte`
+--
+ALTER TABLE `reporte`
+  ADD CONSTRAINT `reporte_ibfk_1` FOREIGN KEY (`ID_Vaca`) REFERENCES `vacuno` (`ID_Vaca`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `vacuno`

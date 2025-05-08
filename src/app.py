@@ -7,6 +7,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from weasyprint import HTML
 from io import BytesIO
 import pandas as pd
+import openpyxl
 
 from config import config
 
@@ -14,10 +15,11 @@ from config import config
 from models.ModelUser import ModelUser
 from models.ModelGranja import ModelGranja
 from models.ModelReporte import ModelReporte
+from models.ModelVacuno import ModelVacuno
+from models.ModelLote import ModelLote
 
 # Entities:
 from models.entities.User import User
-
 
 app = Flask(__name__)
 
@@ -25,6 +27,15 @@ csrf = CSRFProtect(app)
 db = MySQL(app)
 login_manager_app = LoginManager(app)
 
+@app.template_filter('calcular_edad')
+def calcular_edad(fecha_nacimiento):
+    hoy = datetime.now().date()
+    nacimiento = fecha_nacimiento
+    edad = hoy.year - nacimiento.year
+    #Revisa si el nacimiento ha ocurrido en este año
+    if (hoy.month, hoy.day) < (nacimiento.month, nacimiento.day):
+        edad -= 1
+    return f"{edad} años"
 
 @login_manager_app.user_loader
 def load_user(id):
@@ -39,8 +50,6 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # print(request.form['username'])
-        # print(request.form['password'])
         user = User(0, request.form['email'], request.form['password'])
         logged_user = ModelUser.login(db, user)
         if logged_user != None:
@@ -191,6 +200,132 @@ def delete_granja(granja_id):
         return jsonify({'error': str(ex)}), 500
 
 
+@app.route('/gestion_ganado')
+@login_required
+def gestion_ganado():
+    granja_id = request.args.get('granja_id')
+    granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+
+    if not granja:
+        flash("Granja no encontrada")
+        return redirect(url_for('home'))
+
+    vacunos = ModelVacuno.get_vacunos_by_granja(db, granja_id)
+    lotes = ModelLote.get_active_lotes(db, granja_id)
+
+    return render_template('GestionGanado.html',
+                           vacunos=vacunos,
+                           granja=granja,
+                           lotes=lotes)
+
+
+@app.route('/crear_vacuno', methods=['POST'])
+@login_required
+def crear_vacuno():
+    try:
+        data = request.get_json()
+
+        # Validate lote belongs to user's farm
+        lote = ModelLote.get_lote_by_id(db, data['lote'], current_user.id)
+        if not lote:
+            return jsonify({'success': False, 'error': 'Lote no válido'}), 400
+
+        ModelVacuno.create_vacuno(db, {
+            'lote': data['lote'],
+            'etiqueta': data['etiqueta'],
+            'fierro': data['fierro'],
+            'sexo': data['sexo'],
+            'fecha_nacimiento': data['fecha_nacimiento'],
+            'raza': data['raza'],
+            'proposito': data['proposito']
+        })
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        app.logger.error(f"Error creating cattle: {str(ex)}")
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+@app.route('/actualizar_vacuno', methods=['POST'])
+@login_required
+def actualizar_vacuno():
+    try:
+        data = request.get_json()
+
+        # Validate required fields
+        required_fields = ['etiqueta', 'fierro', 'sexo', 'fecha_nacimiento', 'raza', 'proposito']
+        if not all(field in data for field in required_fields):
+            return jsonify({'success': False, 'error': 'Faltan campos requeridos'}), 400
+
+        # Update in database
+        updated = ModelVacuno.update_vacuno(
+            db=db,
+            etiqueta=data['etiqueta'],
+            nuevos_datos={
+                'fierro': data['fierro'],
+                'sexo': data['sexo'],
+                'fecha_nacimiento': data['fecha_nacimiento'],
+                'raza': data['raza'],
+                'proposito': data['proposito']
+            }
+        )
+
+        if not updated:
+            return jsonify({'success': False, 'error': 'Vacuno no encontrado'}), 404
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        app.logger.error(f"Error updating cattle: {str(ex)}")
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/eliminar_vacuno', methods=['POST'])
+@login_required
+def eliminar_vacuno():
+    try:
+        data = request.get_json()
+        etiqueta = data.get('etiqueta')
+
+        if not etiqueta:
+            return jsonify({'success': False, 'error': 'Falta la etiqueta del vacuno'}), 400
+
+        deleted = ModelVacuno.delete_vacuno(
+            db=db,
+            etiqueta=etiqueta,
+            owner_id=current_user.id
+        )
+
+        if not deleted:
+            return jsonify({'success': False, 'error': 'Vacuno no encontrado o no autorizado'}), 404
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        app.logger.error(f"Error deleting cattle: {str(ex)}")
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/crear_lote', methods=['POST'])
+@login_required
+def crear_lote():
+    try:
+        granja_id = request.args.get('granja_id')
+
+        # Verify farm ownership
+        granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+        if not granja:
+            return jsonify({'success': False, 'error': 'Granja no encontrada'}), 404
+
+        # Create new lote
+        ModelLote.create_lote(db, granja_id)
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        app.logger.error(f"Error creating lote: {str(ex)}")
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
 @app.route('/exportar_pdf')
 @login_required
 def exportar_pdf():
@@ -265,7 +400,7 @@ def exportar_excel():
             'Fecha Nacimiento': vaca[4],
             'Raza': vaca[5],
             'Estado Salud': vaca[6],
-            'Observaciones': vaca[7]
+            'Proposito': vaca[7]
         } for vaca in vacunos])
 
         # Create Excel file in memory
@@ -288,6 +423,138 @@ def exportar_excel():
         app.logger.error(f"Error generating Excel: {str(ex)}")
         flash("Error al generar el reporte")
         return redirect(url_for('estadisticas', granja_id=granja_id))
+
+
+@app.route('/importar_vacunos', methods=['POST'])
+@login_required
+def importar_vacunos():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file uploaded'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No selected file'}), 400
+
+        if not file.filename.endswith('.xlsx'):
+            return jsonify({'success': False, 'error': 'Solo se aceptan archivos XLSX'}), 400
+
+        # Read Excel file
+        df = pd.read_excel(file, dtype=str)
+        required_columns = ['Etiqueta', 'Fierro', 'Sexo', 'Fecha_Nacimiento', 'Raza', 'Proposito', 'Lote_ID']
+
+        # Validate columns
+        if not all(col in df.columns for col in required_columns):
+            return jsonify({
+                'success': False,
+                'error': f'El archivo debe contener estas columnas: {", ".join(required_columns)}'
+            }), 400
+
+        success_count = 0
+        errors = []
+
+        for index, row in df.iterrows():
+            try:
+                # Validate lote ownership
+                lote = ModelLote.get_lote_by_id(db, row['Lote_ID'], current_user.id)
+                if not lote:
+                    errors.append(f"Fila {index + 2}: Lote ID {row['Lote_ID']} no válido")
+                    continue
+
+                # Prepare cattle data
+                cattle_data = {
+                    'lote': row['Lote_ID'],
+                    'etiqueta': row['Etiqueta'],
+                    'fierro': row['Fierro'],
+                    'sexo': row['Sexo'],
+                    'fecha_nacimiento': row['Fecha_Nacimiento'],
+                    'raza': row['Raza'],
+                    'proposito': row['Proposito']
+                }
+
+                # Insert into database
+                ModelVacuno.create_vacuno(db, cattle_data)
+                success_count += 1
+
+            except Exception as e:
+                errors.append(f"Fila {index + 2}: {str(e)}")
+                continue
+
+        return jsonify({
+            'success': True,
+            'imported': success_count,
+            'errors': errors
+        })
+
+    except Exception as ex:
+        return jsonify({
+            'success': False,
+            'error': f'Error procesando archivo: {str(ex)}'
+        }), 500
+
+
+@app.route('/gestion_reportes')
+@login_required
+def gestion_reportes():
+    granja_id = request.args.get('granja_id')
+    granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+
+    if not granja:
+        flash("Granja no encontrada")
+        return redirect(url_for('home'))
+
+    reportes = ModelReporte.get_reportes_by_granja(db, granja_id)
+    return render_template('GestionReportes.html', granja=granja, reportes=reportes)
+
+
+@app.route('/crear_reporte', methods=['POST'])
+@login_required
+def crear_reporte():
+    try:
+        data = request.get_json()
+        granja_id = data.get('granja_id')
+
+        # Validate farm ownership
+        granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
+        if not granja:
+            return jsonify({'success': False, 'error': 'Granja no válida'}), 400
+
+        ModelReporte.create_reporte(db, {
+            'etiqueta': data['etiqueta'],
+            'fecha_reporte': data['fecha_reporte'],
+            'tipo_reporte': data['tipo_reporte'],
+            'observacion': data['observacion']
+        }, granja_id)
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        return jsonify({'success': False, 'error': str(ex)}), 500
+
+
+@app.route('/eliminar_reporte', methods=['POST'])
+@login_required
+def eliminar_reporte():
+    try:
+        data = request.get_json()
+        reporte_id = data.get('reporte_id')
+
+        if not reporte_id:
+            return jsonify({'success': False, 'error': 'Falta el ID del reporte'}), 400
+
+        deleted = ModelReporte.delete_reporte(
+            db=db,
+            reporte_id=reporte_id,
+            owner_id=current_user.id
+        )
+
+        if not deleted:
+            return jsonify({'success': False, 'error': 'Reporte no encontrado o no autorizado'}), 404
+
+        return jsonify({'success': True})
+
+    except Exception as ex:
+        return jsonify({'success': False, 'error': str(ex)}), 500
 
 @app.route('/protected')
 @login_required

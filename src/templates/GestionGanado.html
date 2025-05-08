@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>CowTrack - Gestión de Ganado</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <style>
@@ -180,6 +181,27 @@
 
         }
 
+        .btnNLote {
+            background-color: #d7a86e;
+            justify-content: center;
+            height: 45px;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 18px;
+            cursor: pointer;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+            font-size: medium;
+            font-weight: bold;
+            color: #0c0c0c;
+            transition: 0.3s;
+
+        }
+
+        .btnNLote:hover {
+            background-color: #f3c633;
+
+        }
+
         /* Tabla */
         table.dataTable thead th {
             background-color: #fff;
@@ -216,6 +238,23 @@
         }
 
         .btn-examinar:hover {
+            background-color: #d7a86e;
+        }
+
+        .btn-plantilla {
+            background-color: #f3c633;
+            border: none;
+            padding: 7px 15px;
+            color: #000000;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+            font-weight: bold;
+            font-size: 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-plantilla:hover {
             background-color: #d7a86e;
         }
 
@@ -402,15 +441,70 @@
             box-shadow: 0 0 5px rgba(231, 111, 81, 0.4);
         }
 
+        .adjuntos-section {
+            margin: 20px 30px;
+        }
+
+        .upload-container {
+            border: 2px dashed #c69c6d;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f8f8f8;
+        }
+
+        .drop-zone {
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .drop-zone:hover {
+            background-color: #fff8f2;
+        }
+
+        .drop-zone svg {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            color: #c69c6d;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 15px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            margin: 5px 0;
+            background-color: white;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .file-item button {
+            background: none;
+            border: none;
+            color: #ff4444;
+            cursor: pointer;
+            padding: 0 5px;
+        }
     </style>
 </head>
 
 <body>
-    <iframe class="header" src="header.html" frameborder="0"></iframe>
+    <iframe class="header" src="{{ url_for('header') }}" frameborder="0"></iframe>
 
     <section class="sidebar">
-        <div class="contenIzquierdo"> <!-- NO QUITAR-->
-            <button class="icon-button">
+        <div class="contenIzquierdo">
+            <button class="icon-button"  onclick="window.location.href= '{{ url_for('home') }}'">
                 <span class="tooltip-text">Inicio</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-house-door-fill" viewBox="0 0 20 20">
@@ -419,7 +513,7 @@
                 </svg>
             </button>
 
-            <button class="icon-button">
+            <button onclick="window.location.href='{{ url_for('estadisticas', granja_id=granja[0]) }}'" class="icon-button">
                 <span class="tooltip-text">Estadisticas</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-bar-chart-fill" viewBox="0 0 20 20">
@@ -428,18 +522,7 @@
                 </svg>
             </button>
 
-            <button class="icon-button">
-                <span class="tooltip-text">Registro Vacuno</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-journals" viewBox="0 0 20 20">
-                    <path
-                        d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2 2 2 0 0 1-2 2H3a2 2 0 0 1-2-2h1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1H1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v9a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2" />
-                    <path
-                        d="M1 6v-.5a.5.5 0 0 1 1 0V6h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V9h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 2.5v.5H.5a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1H2v-.5a.5.5 0 0 0-1 0" />
-                </svg>
-            </button>
-
-            <button class="icon-button">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('gestion_reportes', granja_id=granja[0]) }}'">
                 <span class="tooltip-text">Reportes</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-file-medical-fill" viewBox="0 0 20 20">
@@ -467,7 +550,7 @@
                 </svg>
             </button>
             <button class="icon-button">
-                <span class="tooltip-text">Cerrar Sesión</span>
+                <span class="tooltip-text" onclick="window.location.href= '{{ url_for('logout') }}'">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-box-arrow-right" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -480,7 +563,7 @@
     </section>
 
     <section class="encabezado">
-        <span>Nombre de la Finca</span>
+        <span>{{ granja[1] }}</span>
     </section>
 
     <!-- Contenido -->
@@ -491,6 +574,14 @@
         <div class="search-add-container">
             <input type="search" id="busqueda" placeholder="Buscar vaca">
 
+            <button class="btnNLote" id="btnNuevoLote">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                     class="bi bi-folder-plus" viewBox="0 0 16 16">
+                    <path d="m.5 3 .04.87a2 2 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2m5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672Z"/>
+                    <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5"/>
+                </svg>
+                Nuevo Lote
+            </button>
 
             <button class="btnNRegistro">
                 <svg color="black" xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
@@ -509,16 +600,25 @@
                     <h1>Nuevo Registro de ganado</h1>
                 </div>
                 <div class="modal-body">
+                    <div class="template-section">
+                        <button onclick="downloadTemplate()" class="btn-plantilla">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                                <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+                            </svg>
+                            Descargar Plantilla
+                        </button>
+                    </div>
                     <h3>Ingrese los datos solicitados del ganado:</h3>
                     <form id="formGanado">
                         <div class="form-grid">
                             <div>
                                 <label>Etiqueta:</label>
-                                <input type="text" name="etiqueta" required />
+                                <input type="text" name="etiqueta" id="etiqueta" required />
                             </div>
                             <div>
                                 <label>Fierro:</label>
-                                <input type="text" name="fierro" required />
+                                <input type="text" name="fierro" id="fierro" required />
                             </div>
 
                             <div>
@@ -533,7 +633,17 @@
                                 <label for="fechaNacimiento">Fecha de nacimiento:</label>
                                 <input type="date" id="fechaNacimiento" name="fechaNacimiento" required />
                             </div>
-
+                            <div>
+                                <label for="lote">Lote:</label>
+                                <select name="lote" id="lote" required>
+                                    <option value="">Seleccione un lote</option>
+                                    {% for lote in lotes %}
+                                    <option value="{{ lote[0] }}">
+                                        Lote {{ lote[0] }} - {{ lote[1] }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                             <div>
                                 <label for="raza">Raza:</label>
                                 <select name="raza" id="raza" required>
@@ -564,14 +674,94 @@
 
                             
                         </div>
-                        <p style="font-weight: bold; margin-top: 30px;">Agregar Auxiliares:</p>
-                        <div class="acciones-compartir">
-                            <button type="button" class="compartir-btn">Compartir por Correo</button>
-                            <button type="button" class="compartir-btn">Compartir por Link</button>
+
+                        <div class="adjuntos-section">
+                            <p style="font-weight: bold; margin-top: 30px;">O Registra un conjunto de ganados:</p>
+
+                            <!-- File Upload Container -->
+                            <div class="upload-container">
+                                <div id="drop-zone" class="drop-zone">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                                    </svg>
+                                    <p>Arrastra una hoja de calculo con los datos necesarios</p>
+                                    <input type="file" id="file-input" multiple accept=".xlsx">
+                                </div>
+
+                                <!-- Selected Files List -->
+                                <div id="file-list" class="file-list"></div>
+                            </div>
+                        </div>
+                        <div class="boton-final">
+                            <button type="submit" class="generar-btn">Generar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalEdicion" class="modal">
+            <div class="modal-contenido">
+                <div class="modal-header">
+                    <h1>Editar Registro de Ganado</h1>
+                </div>
+                <div class="modal-body">
+                    <h3>Modifique los datos del vacuno:</h3>
+                    <form id="formEdicion">
+                        <div class="form-grid">
+                            <div>
+                                <label>Etiqueta:</label>
+                                <input type="text" id="edit-etiqueta" name="etiqueta" required readonly>
+                            </div>
+                            <div>
+                                <label>Fierro:</label>
+                                <input type="text" id="edit-fierro" name="fierro" required>
+                            </div>
+
+                            <div>
+                                <label for="edit-sexo">Sexo:</label>
+                                <select name="sexo" id="edit-sexo" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="Macho">Macho</option>
+                                    <option value="Hembra">Hembra</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="edit-fechaNacimiento">Fecha de nacimiento:</label>
+                                <input type="date" id="edit-fechaNacimiento" name="fechaNacimiento" required>
+                            </div>
+
+                            <div>
+                                <label for="edit-raza">Raza:</label>
+                                <select name="raza" id="edit-raza" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="Brahman">Brahman</option>
+                                    <option value="Beef Master">Beef Master</option>
+                                    <option value="Nelore">Nelore</option>
+                                    <option value="Simbrah">Simbrah</option>
+                                    <option value="Guzerat">Guzerat</option>
+                                    <option value="Suizo americano">Suizo americano</option>
+                                    <option value="Suizo europeo">Suizo europeo</option>
+                                    <option value="Brangus">Brangus</option>
+                                    <option value="Gyr">Gyr</option>
+                                    <option value="Charolais">Charolais</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="edit-proposito">Propósito:</label>
+                                <select name="proposito" id="edit-proposito" required>
+                                    <option value="">Selecciona una opción</option>
+                                    <option value="Lechera">Lechera</option>
+                                    <option value="Carne">Carne</option>
+                                    <option value="Reproductora">Reproductora</option>
+                                    <option value="Fin zootecnico">Fin zootecnico</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="boton-final">
-                            <button type="submit" class="generar-btn">Generar</button>
+                            <button type="submit" class="generar-btn">Guardar Cambios</button>
                         </div>
                     </form>
                 </div>
@@ -591,24 +781,29 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Filas de ejemplo -->
-                <!-- BORRAR CUANDO TERMINES -->
+                {% for vacuno in vacunos %}
                 <tr>
-                    <td>001</td>
-                    <td>AB-1234567891012345678910</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
+                    <td>{{ vacuno[0] }}</td>
+                    <td>{{ vacuno[1] }}</td>
+                    <td>{{ vacuno[2] }}</td>
+                   <td>{{ vacuno[3] | calcular_edad }}</td>
+                    <td>{{ vacuno[4] }}</td>
+                    <td>{{ vacuno[5] }}</td>
+                    <td><button class="btn-examinar"
+                        data-etiqueta="{{ vacuno[0] }}"
+                        data-fierro="{{ vacuno[1] }}"
+                        data-sexo="{{ vacuno[2] }}"
+                        data-fecha="{{ vacuno[3].strftime('%Y-%m-%d') }}"
+                        data-raza="{{ vacuno[4] }}"
+                        data-proposito="{{ vacuno[5] }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
                                 class="bi bi-pencil-fill" viewBox="0 0 16 16">
                                 <path
                                     d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
                             </svg>
-                            Examinar
+                            Editar
                         </button>
-                        <button class="btn-eliminar">
+                        <button class="btn-eliminar" data-etiqueta="{{ vacuno[0] }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
                                 <path
@@ -617,320 +812,7 @@
                         </button>
                     </td>
                 </tr>
-                <!-- BORRAR CUANDO TERMINES -->
-                <tr>
-                    <td>002</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>003</td>
-                    <td>ADEV</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>004</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>005</td>
-                    <td>AB-123</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>006</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>007</td>
-                    <td>AB-123</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>008</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>009</td>
-                    <td>AB-123</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>010</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>011</td>
-                    <td>AB-123</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>012</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>013</td>
-                    <td>AB-123</td>
-                    <td>Hembra</td>
-                    <td>2 años</td>
-                    <td>Holstein</td>
-                    <td>Leche</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>014</td>
-                    <td>CD-456</td>
-                    <td>Macho</td>
-                    <td>3 años</td>
-                    <td>Angus</td>
-                    <td>Carne</td>
-                    <td><button class="btn-examinar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
-                                class="bi bi-pencil-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z" />
-                            </svg>
-                            Examinar
-                        </button>
-                        <button class="btn-eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                <path
-                                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
-                <!-- Puedes agregar más -->
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -938,7 +820,16 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <script>
+        const editModal = document.getElementById("modalEdicion");
+        const editButtons = document.querySelectorAll(".btn-examinar");
+        const modal = document.getElementById("modalRegistro");
+        const btnNuevo = document.querySelector(".btnNRegistro");
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+
         $(document).ready(function () {
             const table = $('#tablaGanado').DataTable({
                 language: {
@@ -953,10 +844,72 @@
                 table.search(this.value).draw();
             });
         });
-    </script>
-    <script>
-        const modal = document.getElementById("modalRegistro");
-        const btnNuevo = document.querySelector(".btnNRegistro");
+
+        editButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                // Get data attributes
+                const data = {
+                    etiqueta: button.dataset.etiqueta,
+                    fierro: button.dataset.fierro,
+                    sexo: button.dataset.sexo,
+                    fecha: button.dataset.fecha,
+                    raza: button.dataset.raza,
+                    proposito: button.dataset.proposito
+                };
+
+                // Populate form fields
+                document.getElementById("edit-etiqueta").value = data.etiqueta;
+                document.getElementById("edit-fierro").value = data.fierro;
+                document.getElementById("edit-sexo").value = data.sexo;
+                document.getElementById("edit-fechaNacimiento").value = data.fecha;
+                document.getElementById("edit-raza").value = data.raza;
+                document.getElementById("edit-proposito").value = data.proposito;
+
+                // Show modal
+                editModal.style.display = "block";
+            });
+        });
+
+        // Handle form submission
+        document.getElementById("formEdicion").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const formData = {
+                etiqueta: document.getElementById("edit-etiqueta").value,
+                fierro: document.getElementById("edit-fierro").value,
+                sexo: document.getElementById("edit-sexo").value,
+                fecha_nacimiento: document.getElementById("edit-fechaNacimiento").value,
+                raza: document.getElementById("edit-raza").value,
+                proposito: document.getElementById("edit-proposito").value
+            };
+
+            fetch("{{ url_for('actualizar_vacuno') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'  // Add CSRF protection
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Cambios guardados exitosamente");
+                    // Optional: Refresh the table data
+                    window.location.reload();
+                } else {
+                    alert("Error: " + (data.error || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error en la conexión");
+            })
+            .finally(() => {
+                editModal.style.display = "none";
+            });
+        });
+
 
         btnNuevo.addEventListener("click", () => {
             modal.style.display = "block";
@@ -967,15 +920,192 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
+            if (event.target == editModal) {
+                editModal.style.display = "none";
+            }
         };
 
-        // Puedes agregar lógica al enviar el formulario
-        document.getElementById("formGanado").addEventListener("submit", function (e) {
+        document.getElementById("formGanado").addEventListener("submit", function(e) {
             e.preventDefault();
-            alert("Registro generado correctamente");
-            modal.style.display = "none";
-            this.reset();
+
+            const formData = {
+                lote: document.getElementById("lote").value,
+                etiqueta: document.getElementById("etiqueta").value,
+                fierro: document.getElementById("fierro").value,
+                sexo: document.getElementById("sexo").value,
+                fecha_nacimiento: document.getElementById("fechaNacimiento").value,
+                raza: document.getElementById("raza").value,
+                proposito: document.getElementById("proposito").value
+            };
+
+            fetch("{{ url_for('crear_vacuno') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.success) {
+                    alert("Registro exitoso");
+                    window.location.reload();
+                } else {
+                    alert("Error: " + (data.error || 'Error al registrar'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error de conexión");
+            });
         });
+
+        document.querySelectorAll('.btn-eliminar').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const etiqueta = button.dataset.etiqueta;
+
+                if(confirm(`¿Está seguro que desea eliminar el vacuno con etiqueta ${etiqueta}?`)) {
+                    fetch("{{ url_for('eliminar_vacuno') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ etiqueta: etiqueta })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            alert('Vacuno eliminado correctamente');
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + (data.error || 'Error al eliminar'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error de conexión');
+                    });
+                }
+            });
+        });
+
+        document.getElementById('btnNuevoLote').addEventListener('click', () => {
+            if(confirm('¿Crear un nuevo lote con configuración predeterminada?\nFecha: Hoy\nEstado: Activo\nVacunos: 0')) {
+                fetch(`{{ url_for('crear_lote') }}?granja_id={{ granja[0] }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        alert('Lote creado exitosamente');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + (data.error || 'Error al crear lote'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error de conexión');
+                });
+            }
+        });
+
+        // Handle click on drop zone
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection
+        fileInput.addEventListener('change', handleFiles);
+
+        // Handle drag and drop
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#fff3e8';
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.style.backgroundColor = '';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '';
+            handleFiles(e.dataTransfer);
+        });
+
+        function handleFiles(files) {
+            const file = files.files[0];
+
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch("{{ url_for('importar_vacunos') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let message = `Se importaron ${data.imported} registros exitosamente`;
+                        if (data.errors.length > 0) {
+                            message += `\nErrores:\n- ${data.errors.join('\n- ')}`;
+                        }
+                        alert(message);
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error de conexión');
+                });
+            }
+        }
+
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+
+            fileItem.innerHTML = `
+                <span>${file.name} (${formatFileSize(file.size)})</span>
+                <button onclick="this.parentElement.remove()">×</button>
+            `;
+
+            fileList.appendChild(fileItem);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i]);
+        }
+
+        function downloadTemplate() {
+            // Create sample data
+            const templateData = [
+                ['Etiqueta', 'Fierro', 'Sexo', 'Fecha_Nacimiento', 'Raza', 'Proposito', 'Lote_ID']
+            ];
+
+            // Create worksheet and workbook
+            const ws = XLSX.utils.aoa_to_sheet(templateData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Registro");
+
+            // Save the file
+            XLSX.writeFile(wb, "Plantilla_Registro_Ganado.xlsx");
+        }
     </script>
 
 </body>
