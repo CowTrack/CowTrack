@@ -419,19 +419,10 @@
                         <input type="text" id="direccion" required>
                     </div>
                     <div class="form-group">
-                        <label>Cantidad de Ganado:</label>
-                        <input type="number" id="cant_ganado" min="1" required>
-                    </div>
-                    <div class="form-group">
                         <label>Tatuaje:</label>
                         <input type="text" id="tatuaje" required>
                     </div>
                     <div class="form-group">
-                        <label>Estado:</label>
-                        <select id="status" required>
-                            <option value="1">Activo</option>
-                            <option value="0">Inactivo</option>
-                        </select>
                     </div>
                     <button type="submit">Guardar</button>
                 </form>
@@ -449,10 +440,6 @@
                 <div class="form-group">
                     <label>Dirección:</label>
                     <input type="text" id="edit_direccion" required>
-                </div>
-                <div class="form-group">
-                    <label>Cantidad de Ganado:</label>
-                    <input type="number" id="edit_cant_ganado" min="1" required>
                 </div>
                 <div class="form-group">
                     <label>Tatuaje:</label>
@@ -534,7 +521,6 @@
                 .then(data => {
                     document.getElementById('edit_id').value = data.id;
                     document.getElementById('edit_direccion').value = data.direccion;
-                    document.getElementById('edit_cant_ganado').value = data.cant_ganado;
                     document.getElementById('edit_tatuaje').value = data.tatuaje;
                     document.getElementById('edit_status').value = data.status.toString();
                     document.getElementById('editGranjaModal').style.display = 'block';
@@ -553,7 +539,6 @@
 
             const formData = {
                 direccion: document.getElementById('edit_direccion').value,
-                cant_ganado: document.getElementById('edit_cant_ganado').value,
                 tatuaje: document.getElementById('edit_tatuaje').value,
                 status: document.getElementById('edit_status').value,
             };

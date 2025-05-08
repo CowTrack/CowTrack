@@ -157,7 +157,6 @@ def get_granja(granja_id):
         return jsonify({
             'id': granja[0],
             'direccion': granja[1],
-            'cant_ganado': granja[2],
             'status': granja[3],
             'tatuaje': granja[4]
         })
@@ -174,7 +173,6 @@ def update_granja(granja_id):
             granja_id=granja_id,
             owner_id=current_user.id,
             direccion=data['direccion'],
-            cant_ganado=data['cant_ganado'],
             status=data['status'],
             tatuaje=data['tatuaje']
         )

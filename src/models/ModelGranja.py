@@ -48,13 +48,11 @@ class ModelGranja:
             cursor.execute(
                 """UPDATE granja SET 
                     Dirección = %s,
-                    Cant_Ganado = %s,
                     Status = %s,
                     Tatuaje = %s
                 WHERE ID_Granja = %s AND ID_Dueño = %s""",
                 (
                     kwargs['direccion'],
-                    kwargs['cant_ganado'],
                     kwargs['status'],
                     kwargs['tatuaje'],
                     granja_id,
