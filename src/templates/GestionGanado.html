@@ -7,495 +7,794 @@
     <title>CowTrack - Gestión de Ganado</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <style>
-        body {
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-        }
-
-        /* IMPORTACION DEL HEADER y lo Mantiene fijo */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px !important;
-            background-color: white;
-            z-index: 1000;
-        }
-
-        /* Mantiene el sidebar fijo */
-        .sidebar {
-            position: fixed;
-            display: flex;
-            top: 55px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background-color: #484848;
-            z-index: 999;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .contenIzquierdo,
-        .contenDerecho {
-            display: flex;
-            align-items: center;
-        }
-
-        .contenIzquierdo {
-            justify-content: flex-start;
-            /* Mantiene elementos a la izquierda */
-            padding-left: 15px;
-            gap: 20px;
-
-        }
-
-        .contenDerecho {
-            justify-content: flex-end;
-            /* Mantiene elementos a la derecha */
-            padding-right: 15px;
-            gap: 10px;
-
-        }
-
-        .contenIzquierdo svg,
-        .contenDerecho svg {
-            cursor: pointer;
-        }
-
-        .icon-button {
-            position: relative;
-            background: transparent;
-            border-left: #2c2f33 1px solid;
-            border-right: #2c2f33 1px solid;
-            border-top: none;
-            border-bottom: none;
-            padding: 10px 10px 0px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            height: 45px;
-            /*relative: los elementos se posicionan de forma relativa a su posición normal.*/
-            display: inline-block;
-            transition: 0.5s;
-        }
-
-        .tooltip-text {
-            visibility: hidden;
-            background-color: #2c2f33;
-            color: #fff;
-            text-align: center;
-            border-radius: 10px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            top: 110%;
-            /* Posiciona el tooltip bajo del elemento */
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0%;
-            font-family: sans-serif;
-            font-size: 15px;
-            font-weight: bolder;
-            transition: opacity 0.2s;
-        }
-
-        .icon-button:hover .tooltip-text {
-            visibility: visible;
-            opacity: 90%;
-        }
-
-        .icon-button:hover {
-            background: #2c2f33;
-        }
-
-        /*Estilos del banner*/
-        .encabezado {
-            margin-top: 105px;
-            padding: 40px 50px 5px 50px;
-            width: auto;
-        }
-
-        .encabezado span {
-            display: block;
-            max-width: 75%;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: 28px;
-            font-weight: bold;
-            color: #000000;
-        }
-
-        /* Contenido principal */
-        .container {
-            padding: 0px 80px 5px 80px;
-        }
-
-        h2 {
-            text-align: center;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: 26px;
-            font-weight: lighter;
-            padding-bottom: 15px;
-        }
-
-        .search-add-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .search-add-container input[type="search"] {
-            width: 250px;
-            height: 42px;
-            padding: 10px;
-            padding-left: 20px;
-            padding-right: 10px;
-            border: 1px solid #383838;
-            border-radius: 12px;
-            font-family: Cambria, Cochin, Georgia, Times, serif;
-            font-size: medium;
-            background-color: whitesmoke;
-        }
-
-        .btnNRegistro {
-            background-color: #d7a86e;
-            justify-content: center;
-            height: 45px;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: medium;
-            font-weight: bold;
-            color: #0c0c0c;
-            transition: 0.3s;
-
-        }
-
-        .btnNRegistro:hover {
-            background-color: #f3c633;
-
-        }
-
-        .btnNLote {
-            background-color: #d7a86e;
-            justify-content: center;
-            height: 45px;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 18px;
-            cursor: pointer;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: medium;
-            font-weight: bold;
-            color: #0c0c0c;
-            transition: 0.3s;
-
-        }
-
-        .btnNLote:hover {
-            background-color: #f3c633;
-
-        }
-
-        /* Tabla */
-        table.dataTable thead th {
-            background-color: #fff;
-            border-bottom: 2px solid #FFAE8D;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-        }
-
-        table.dataTable tbody td {
-            background-color: #fff6e4;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            color: #000;
-            max-width: 120px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .dataTables_wrapper .dataTables_filter {
-            display: none;
-            /* Ocultar el filtro de DataTables (usamos el nuestro) */
-        }
-
-        .btn-examinar {
-            background-color: #f3c633;
-            border: none;
-            padding: 7px 15px;
-            color: #000000;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-weight: bold;
-            font-size: 13px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-examinar:hover {
-            background-color: #d7a86e;
-        }
-
-        .btn-plantilla {
-            background-color: #f3c633;
-            border: none;
-            padding: 7px 15px;
-            color: #000000;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-weight: bold;
-            font-size: 13px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-plantilla:hover {
-            background-color: #d7a86e;
-        }
-
-        .btn-eliminar {
-            background-color: #f14545;
-            border: none;
-            padding: 7px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-eliminar:hover {
-            background-color: #d76e6e;
-        }
-
-        /* Estilo para el dropdown "Mostrar X registros" */
-        .dataTables_length {
-            margin-bottom: 1rem;
-            font-size: 16px;
-            font-weight: lighter;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .dataTables_paginate {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            font-weight: lighter;
-        }
-
-        .paginate_button {
-            background-color: #d7a86e !important;
-        }
-
-        /* Estilo base para los botones de paginación */
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            background-color: #e0e0e0;
-            /* Color neutro */
-            border: none !important;
-            border-radius: 10px;
-            padding: 5px 15px;
-            margin: 0 3px;
-            color: #161616 !important;
-            cursor: pointer;
-        }
-
-        /* Fondo modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Contenedor del contenido */
-        .modal-contenido {
-            background-color: #fff;
-            margin: 3% auto;
-            padding: 0px;
-            border-radius: 14px;
-            width: 500px;
-            max-width: 90%;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-        }
-
-        .modal-header {
-            background-color: #c69c6d;
-            color: #fff;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding-left: 15px;
-            border-radius: 14px 14px 0 0;
-            font-size: 11px !important;
-        }
-
-        .modal-body h3 {
-            margin: 30px 30px 30px 30px;
-            font-size: 17px;
-            font-weight: bold;
-        }
-
-        .modal-body form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: lighter;
-            
-        }
-
-        .modal-body form input[type="text"] {
-            width: 80%;
-            border: none;
-            border-bottom: 1px solid #f4a261;
-            margin-bottom: 3px;
-            padding: 5px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .acciones-compartir,
-        #formGanado p {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 30px;
-        }
-
-        .compartir-btn {
-            flex: 1;
-            margin: 5px;
-            padding: 15px;
-            border: 1px dashed #555;
-            background: #ebebeb;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .boton-final {
-            text-align: center;
-            height: 60px;
-            padding-top: 10px;
-            margin: 0px 20px;
-        }
-
-        .generar-btn {
-            padding: 10px 20px;
-            background-color: #c69c6d;
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Opcional: cerrar al hacer click afuera del modal */
-        .modal[open] {
-            display: block;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px 20px;
-            padding: 0px 40px;
-        }
-
-
-        .form-grid select, input[type="date"]{
-            width: 190px;
-            padding: 10px 12px;
-            border: 1px solid #f4a261;
-            border-radius: 12px;
-            font-size: 14px;
-            background-color: #fff8f2;
-            color: #333;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            appearance: none;
-            /* Quita flecha nativa */
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23666' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 12px;
-        }
-
-        input[type="date"]{
-            width: 160px;
-        }
-
-        /* Hover y focus */
-        select:hover,
-        select:focus, 
-        input[type="date"]:hover,
-        input[type="date"]:focus  {
-            border-color: #e76f51;
-            box-shadow: 0 0 5px rgba(231, 111, 81, 0.4);
-        }
-
-        .adjuntos-section {
-            margin: 20px 30px;
-        }
-
-        .upload-container {
-            border: 2px dashed #c69c6d;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #f8f8f8;
-        }
-
-        .drop-zone {
-            text-align: center;
-            padding: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .drop-zone:hover {
-            background-color: #fff8f2;
-        }
-
-        .drop-zone svg {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 10px;
-            color: #c69c6d;
-        }
-
-        #file-input {
-            display: none;
-        }
-
-        .file-list {
-            margin-top: 15px;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px;
-            margin: 5px 0;
-            background-color: white;
-            border-radius: 4px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .file-item button {
-            background: none;
-            border: none;
-            color: #ff4444;
-            cursor: pointer;
-            padding: 0 5px;
-        }
+/* Estilos base responsivos */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
+
+/* IMPORTACION DEL HEADER y lo Mantiene fijo */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px !important;
+    background-color: white;
+    z-index: 1000;
+}
+
+/* Mantiene el sidebar fijo */
+.sidebar {
+    position: fixed;
+    display: flex;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #484848;
+    z-index: 999;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+}
+
+.contenIzquierdo,
+.contenDerecho {
+    display: flex;
+    align-items: center;
+}
+
+.contenIzquierdo {
+    justify-content: flex-start;
+    padding-left: 15px;
+    gap: 10px; /* Reducido para móviles */
+}
+
+.contenDerecho {
+    justify-content: flex-end;
+    padding-right: 15px;
+    gap: 5px; /* Reducido para móviles */
+}
+
+.contenIzquierdo svg,
+.contenDerecho svg {
+    cursor: pointer;
+}
+
+.icon-button {
+    position: relative;
+    background: transparent;
+    border-left: #2c2f33 1px solid;
+    border-right: #2c2f33 1px solid;
+    border-top: none;
+    border-bottom: none;
+    padding: 10px 10px 0px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 45px;
+    display: inline-block;
+    transition: 0.5s;
+    min-width: 45px; /* Asegura un tamaño mínimo */
+}
+
+.tooltip-text {
+    visibility: hidden;
+    background-color: #2c2f33;
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0%;
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: bolder;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+
+.icon-button:hover .tooltip-text {
+    visibility: visible;
+    opacity: 90%;
+}
+
+.icon-button:hover {
+    background: #2c2f33;
+}
+
+/* Estilos del banner */
+.encabezado {
+    margin-top: 105px;
+    padding: 20px 5% 5px 5%; /* Padding responsivo */
+    width: auto;
+}
+
+.encabezado span {
+    display: block;
+    max-width: 100%; /* Cambiado de 75% a 100% */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: 1.5rem; /* Tamaño responsivo */
+    font-weight: bold;
+    color: #000000;
+}
+
+/* Contenido principal */
+.container {
+    padding: 0px 5% 5px 5%; /* Padding responsivo */
+}
+
+h2 {
+    text-align: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: 1.5rem; /* Tamaño responsivo */
+    font-weight: lighter;
+    padding-bottom: 15px;
+}
+
+.search-add-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 15px; /* Espacio entre elementos cuando se envuelven */
+}
+
+.search-add-container input[type="search"] {
+    width: 100%; /* Ancho completo en móviles */
+    max-width: 250px; /* Máximo ancho original */
+    min-width: 200px; /* Ancho mínimo */
+    height: 42px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    font-family: Cambria, Cochin, Georgia, Times, serif;
+    font-size: medium;
+    background-color: whitesmoke;
+}
+
+.btnNRegistro {
+    background-color: #d7a86e;
+    justify-content: center;
+    height: 45px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: medium;
+    font-weight: bold;
+    color: #0c0c0c;
+    transition: 0.3s;
+    white-space: nowrap; /* Evita que el texto se rompa */
+    min-width: 150px; /* Ancho mínimo para el botón */
+}
+
+.btnNRegistro:hover {
+    background-color: #f3c633;
+}
+
+.btnNLote {
+    background-color: #d7a86e;
+    justify-content: center;
+    height: 45px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: medium;
+    font-weight: bold;
+    color: #0c0c0c;
+    transition: 0.3s;
+}
+
+.btnNLote:hover {
+    background-color: #f3c633;
+}
+
+/* Estilos de tabla responsivos */
+.dataTables_wrapper {
+    overflow-x: auto; /* Permite scroll horizontal en la tabla */
+}
+
+table.dataTable {
+    width: 100% !important;
+    min-width: 700px; /* Ancho mínimo para mantener legibilidad */
+}
+
+table.dataTable thead th {
+    background-color: #fff;
+    border-bottom: 2px solid #FFAE8D;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    padding: 8px 4px; /* Padding reducido para móviles */
+    font-size: 0.9rem; /* Tamaño de fuente reducido */
+}
+
+table.dataTable tbody td {
+    background-color: #fff6e4;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    color: #000;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 8px 4px; /* Padding reducido para móviles */
+    font-size: 0.85rem; /* Tamaño de fuente reducido */
+}
+
+.dataTables_wrapper .dataTables_filter {
+    display: none;
+}
+
+.btn-examinar {
+    background-color: #f3c633;
+    border: none;
+    padding: 5px 10px; /* Padding reducido para móviles */
+    color: #000000;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-weight: bold;
+    font-size: 11px; /* Tamaño reducido para móviles */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 2px; /* Margen entre botones */
+}
+
+.btn-examinar:hover {
+    background-color: #d7a86e;
+}
+
+.btn-plantilla {
+    background-color: #f3c633;
+    border: none;
+    padding: 7px 15px;
+    color: #000000;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-weight: bold;
+    font-size: 13px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 15px; /* Espacio debajo del botón */
+}
+
+.btn-plantilla:hover {
+    background-color: #d7a86e;
+}
+
+.btn-eliminar {
+    background-color: #f14545;
+    border: none;
+    padding: 5px 10px; /* Padding reducido para móviles */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 2px; /* Margen entre botones */
+}
+
+.btn-eliminar:hover {
+    background-color: #d76e6e;
+}
+
+/* Estilo para el dropdown "Mostrar X registros" */
+.dataTables_length {
+    margin-bottom: 1rem;
+    font-size: 14px; /* Tamaño reducido para móviles */
+    font-weight: lighter;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap; /* Permite wrap en pantallas pequeñas */
+}
+
+.dataTables_paginate {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 12px; /* Tamaño reducido para móviles */
+    font-weight: lighter;
+}
+
+.paginate_button {
+    background-color: #d7a86e !important;
+}
+
+/* Estilo base para los botones de paginación */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #e0e0e0;
+    border: none !important;
+    border-radius: 10px;
+    padding: 4px 10px; /* Padding reducido para móviles */
+    margin: 0 2px; /* Margen reducido */
+    color: #161616 !important;
+    cursor: pointer;
+    font-size: 12px; /* Tamaño reducido */
+}
+
+/* Modal responsivo */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.modal-contenido {
+    background-color: #fff;
+    margin: 2% auto; /* Margen reducido para móviles */
+    padding: 0px;
+    border-radius: 14px;
+    width: 95%; /* Ancho casi completo en móviles */
+    max-width: 500px; /* Máximo ancho original */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    max-height: 90vh; /* Altura máxima para evitar overflow */
+    overflow-y: auto; /* Scroll vertical si es necesario */
+}
+
+.modal-header {
+    background-color: #c69c6d;
+    color: #fff;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 15px;
+    border-radius: 14px 14px 0 0;
+    font-size: 11px !important;
+}
+
+.modal-body h3 {
+    margin: 20px 20px 20px 20px; /* Márgenes reducidos para móviles */
+    font-size: 1rem; /* Tamaño responsivo */
+    font-weight: bold;
+}
+
+.modal-body form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: lighter;
+    font-size: 0.9rem; /* Tamaño responsivo */
+}
+
+.modal-body form input[type="text"] {
+    width: 90%; /* Ancho ajustado para móviles */
+    border: none;
+    border-bottom: 1px solid #f4a261;
+    margin-bottom: 3px;
+    padding: 5px;
+    outline: none;
+    font-size: 14px;
+}
+
+.acciones-compartir,
+#formGanado p {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 20px; /* Márgenes reducidos */
+    flex-wrap: wrap; /* Permite wrap en pantallas pequeñas */
+}
+
+.compartir-btn {
+    flex: 1;
+    margin: 5px;
+    padding: 15px;
+    border: 1px dashed #555;
+    background: #ebebeb;
+    cursor: pointer;
+    font-size: 13px;
+    min-width: 120px; /* Ancho mínimo */
+}
+
+.boton-final {
+    text-align: center;
+    height: 60px;
+    padding-top: 10px;
+    margin: 0px 20px;
+}
+
+.generar-btn {
+    padding: 10px 20px;
+    background-color: #c69c6d;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.generar-btn:hover {
+    background-color: #a67c5a;
+    transition: background-color 0.3s;
+}
+
+/* Formulario grid responsivo */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Una columna en móviles */
+    gap: 15px;
+    padding: 0px 20px; /* Padding reducido */
+}
+
+.form-grid select,
+.form-grid input[type="date"] {
+    width: 100%; /* Ancho completo en móviles */
+    max-width: 250px; /* Máximo ancho */
+    padding: 10px 12px;
+    border: 1px solid #f4a261;
+    border-radius: 12px;
+    font-size: 14px;
+    background-color: #fff8f2;
+    color: #333;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23666' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+/* Hover y focus */
+.form-grid select:hover,
+.form-grid select:focus,
+.form-grid input[type="date"]:hover,
+.form-grid input[type="date"]:focus {
+    border-color: #e76f51;
+    box-shadow: 0 0 5px rgba(231, 111, 81, 0.4);
+}
+
+.adjuntos-section {
+    margin: 15px 20px; /* Márgenes reducidos */
+}
+
+.upload-container {
+    border: 2px dashed #c69c6d;
+    border-radius: 8px;
+    padding: 10px; /* Padding reducido */
+    background-color: #f8f8f8;
+}
+
+.drop-zone {
+    text-align: center;
+    padding: 15px; /* Padding reducido */
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.drop-zone:hover {
+    background-color: #fff8f2;
+}
+
+.drop-zone svg {
+    width: 30px; /* Tamaño reducido para móviles */
+    height: 30px;
+    margin-bottom: 10px;
+    color: #c69c6d;
+}
+
+.drop-zone p {
+    font-size: 0.9rem; /* Tamaño reducido */
+    margin: 5px 0;
+}
+
+#file-input {
+    display: none;
+}
+
+.file-list {
+    margin-top: 15px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    margin: 5px 0;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    font-size: 0.85rem; /* Tamaño reducido */
+}
+
+.file-item button {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    padding: 0 5px;
+    font-size: 1.2rem;
+}
+
+.template-section {
+    padding: 0 20px;
+    margin-bottom: 10px;
+}
+
+/* Media Queries para diferentes tamaños de pantalla */
+
+/* Tablets pequeños (480px y superior) */
+@media screen and (min-width: 480px) {
+    .encabezado span {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    .search-add-container {
+        flex-wrap: nowrap;
+    }
+
+    .search-add-container input[type="search"] {
+        width: 250px;
+    }
+
+    .modal-contenido {
+        width: 90%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr 1fr; /* Dos columnas en tablets */
+        padding: 0px 30px;
+    }
+
+    .btn-examinar,
+    .btn-eliminar {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    table.dataTable thead th,
+    table.dataTable tbody td {
+        padding: 10px 6px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablets (768px y superior) */
+@media screen and (min-width: 768px) {
+    .encabezado {
+        padding: 25px 8% 5px 8%;
+    }
+
+    .encabezado span {
+        font-size: 2rem;
+    }
+
+    .container {
+        padding: 0px 8% 5px 8%;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    .modal-contenido {
+        width: 80%;
+    }
+
+    .form-grid {
+        padding: 0px 40px; /* Restaura padding original */
+    }
+
+    .btn-examinar {
+        padding: 7px 15px;
+        font-size: 13px; /* Restaura tamaño original */
+    }
+
+    .btn-eliminar {
+        padding: 7px 15px;
+    }
+
+    table.dataTable thead th,
+    table.dataTable tbody td {
+        padding: 10px 8px;
+        font-size: 1rem;
+    }
+
+    .dataTables_length {
+        font-size: 16px; /* Restaura tamaño original */
+    }
+
+    .dataTables_paginate {
+        font-size: 14px; /* Restaura tamaño original */
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 5px 15px; /* Restaura padding original */
+        margin: 0 3px;
+        font-size: 14px;
+    }
+
+    .contenIzquierdo {
+        gap: 15px;
+    }
+
+    .contenDerecho {
+        gap: 8px;
+    }
+}
+
+/* Escritorios (992px y superior) */
+@media screen and (min-width: 992px) {
+    .encabezado {
+        padding: 35px 10% 5px 10%;
+    }
+
+    .container {
+        padding: 0px 10% 5px 10%;
+    }
+
+    .modal-contenido {
+        width: 70%;
+    }
+
+    .adjuntos-section {
+        margin: 20px 30px; /* Restaura márgenes originales */
+    }
+
+    .modal-body h3 {
+        margin: 30px 30px 30px 30px; /* Restaura márgenes originales */
+        font-size: 17px; /* Restaura tamaño original */
+    }
+
+    .drop-zone {
+        padding: 20px; /* Restaura padding original */
+    }
+
+    .drop-zone svg {
+        width: 40px; /* Restaura tamaño original */
+        height: 40px;
+    }
+
+    .drop-zone p {
+        font-size: 1rem; /* Restaura tamaño original */
+    }
+
+    .contenIzquierdo {
+        gap: 18px;
+    }
+
+    .contenDerecho {
+        gap: 10px;
+    }
+}
+
+/* Escritorios grandes (1200px y superior) */
+@media screen and (min-width: 1200px) {
+    .encabezado {
+        padding: 40px 12% 5px 12%;
+    }
+
+    .container {
+        padding: 0px 12% 5px 12%;
+    }
+
+    .modal-contenido {
+        width: 500px; /* Restaura ancho original */
+        max-width: 90%;
+    }
+
+    .file-item {
+        font-size: 1rem; /* Restaura tamaño original */
+    }
+
+    .contenIzquierdo {
+        gap: 20px; /* Restaura gap original */
+    }
+
+    .contenDerecho {
+        gap: 10px; /* Restaura gap original */
+    }
+}
+
+/* Para pantallas muy grandes (1400px y superior) */
+@media screen and (min-width: 1400px) {
+    .encabezado {
+        padding: 40px 50px 5px 50px; /* Restaura padding original */
+    }
+
+    .encabezado span {
+        font-size: 28px; /* Restaura tamaño original */
+        max-width: 75%; /* Restaura ancho original */
+    }
+
+    .container {
+        padding: 0px 80px 5px 80px; /* Restaura padding original */
+    }
+
+    h2 {
+        font-size: 26px; /* Restaura tamaño original */
+    }
+}
+
+/* Mejoras específicas para pantallas muy pequeñas */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        padding: 0 5px;
+    }
+
+    .icon-button {
+        padding: 8px 8px 0px 12px;
+        min-width: 40px;
+    }
+
+    .search-add-container {
+        flex-direction: column; /* Apila verticalmente en móviles pequeños */
+        align-items: stretch;
+    }
+
+    .search-add-container input[type="search"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .btnNRegistro {
+        width: 100%;
+        min-width: auto;
+    }
+
+    table.dataTable {
+        min-width: 600px; /* Reduce ancho mínimo para pantallas muy pequeñas */
+        font-size: 0.8rem;
+    }
+
+    .modal-body h3 {
+        font-size: 0.9rem;
+        margin: 15px 15px 15px 15px;
+    }
+
+    .form-grid {
+        padding: 0px 15px;
+        gap: 10px;
+    }
+
+    .adjuntos-section {
+        margin: 10px 15px;
+    }
+
+    .boton-final {
+        margin: 0px 15px;
+    }
+
+    .drop-zone svg {
+        width: 25px;
+        height: 25px;
+    }
+
+    .drop-zone p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Ocultar columnas en móviles para mejor visualización */
+@media screen and (max-width: 768px) {
+    table.dataTable th:nth-child(4),
+    table.dataTable td:nth-child(4),
+    table.dataTable th:nth-child(5),
+    table.dataTable td:nth-child(5) {
+        display: none; /* Oculta columnas de Edad y Raza en móviles */
+    }
+}
     </style>
 </head>
 
@@ -540,24 +839,8 @@
         </div>
 
         <div class="contenDerecho">
-            <button class="icon-button">
-                <span class="tooltip-text">Notificaciones</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-bell-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
-                </svg>
-            </button>
-            <button class="icon-button">
-                <span class="tooltip-text">Configuración</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-gear-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-                </svg>
-            </button>
-            <button class="icon-button">
-                <span class="tooltip-text" onclick="window.location.href= '{{ url_for('logout') }}'">Cerrar Sesión</span>
+            <button onclick="window.location.href= '{{ url_for('logout') }}'" class="icon-button">
+                <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-box-arrow-right" viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
@@ -618,7 +901,10 @@
                                 <label>Fierro:</label>
                                 <input type="text" name="fierro" id="fierro" required />
                             </div>
-
+                            <div>
+                                <label>Nombre:</label>
+                                <input type="text" name="nombre" id="nombre" required />
+                            </div>
                             <div>
                                 <label for="sexo">Sexo:</label>
                                 <select name="sexo" id="sexo" required>
@@ -684,7 +970,7 @@
                                         <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
                                         <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
                                     </svg>
-                                    <p>Arrastra una hoja de calculo con los datos necesarios</p>
+                                    <p>Arrastra una hoja de cálculo con los datos necesarios</p>
                                     <input type="file" id="file-input" multiple accept=".xlsx">
                                 </div>
 
@@ -791,6 +1077,7 @@
                 lote: document.getElementById("lote").value,
                 etiqueta: document.getElementById("etiqueta").value,
                 fierro: document.getElementById("fierro").value,
+                nombre: document.getElementById("nombre").value,
                 sexo: document.getElementById("sexo").value,
                 fecha_nacimiento: document.getElementById("fechaNacimiento").value,
                 raza: document.getElementById("raza").value,

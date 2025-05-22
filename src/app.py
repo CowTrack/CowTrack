@@ -4,10 +4,14 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_mysqldb import MySQL
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from openpyxl.chart import DoughnutChart, Reference, BarChart, LineChart
 from weasyprint import HTML
 from io import BytesIO
 import pandas as pd
 import openpyxl
+import matplotlib.pyplot as plt
+import io
+import base64
 
 from config import config
 
@@ -26,6 +30,42 @@ app = Flask(__name__)
 csrf = CSRFProtect(app)
 db = MySQL(app)
 login_manager_app = LoginManager(app)
+
+def generate_doughnut(satisfactorio, no_satisfactorio):
+    fig, ax = plt.subplots()
+    sizes = [satisfactorio, no_satisfactorio]
+    colors = ['#EAC655', '#D3D3D3']
+    ax.pie(sizes, colors=colors, startangle=90, wedgeprops=dict(width=0.3))
+    centre_circle = plt.Circle((0,0),0.70,fc='white')
+    fig.gca().add_artist(centre_circle)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close()
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
+
+
+def generate_bar_chart(labels, values):
+    plt.figure()
+    bars = plt.bar(labels, values, color='#EAC655')
+    plt.xticks(rotation=45)
+    for bar in bars:
+        plt.text(bar.get_x() + bar.get_width()/2, bar.get_height(),
+                 int(bar.get_height()),
+                 ha='center', va='bottom')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close()
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
+
+def generate_line_chart(labels, values):
+    plt.figure()
+    plt.plot(labels, values, marker='o', color='#C2A137')
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight')
+    plt.close()
+    return base64.b64encode(buf.getvalue()).decode('utf-8')
 
 @app.template_filter('calcular_edad')
 def calcular_edad(fecha_nacimiento):
@@ -242,6 +282,7 @@ def crear_vacuno():
             'lote': data['lote'],
             'etiqueta': data['etiqueta'],
             'fierro': data['fierro'],
+            'nombre': data['nombre'],
             'sexo': data['sexo'],
             'fecha_nacimiento': data['fecha_nacimiento'],
             'raza': data['raza'],
@@ -313,10 +354,10 @@ def eliminar_vacuno():
         app.logger.error(f"Error deleting cattle: {str(ex)}")
         return jsonify({'success': False, 'error': str(ex)}), 500
 
+
 @app.route('/exportar_pdf')
 @login_required
 def exportar_pdf():
-    # Fetch farm data
     granja_id = request.args.get('granja_id')
     granja = ModelGranja.get_by_id(db, granja_id, current_user.id)
 
@@ -324,26 +365,48 @@ def exportar_pdf():
         flash("Granja no encontrada")
         return redirect(url_for('home'))
 
-    # Fetch owner name from current_user
-    owner_name = current_user.nombre
+    try:
+        # Get all necessary data using existing models
+        breed_stats = ModelGranja.get_breed_stats(db, granja_id)
+        current_year = datetime.now().year
+        monthly_stats = ModelReporte.get_monthly_cattle_stats(db, granja_id, current_year)
+        report_stats = ModelGranja.get_report_stats(db, granja_id)
 
-    # Render HTML template with farm data
-    html = render_template(
-        'pdf_template.html',
-        granja=granja,
-        owner_name=owner_name,
-        # Add other dynamic data here (e.g., charts)
-    )
+        # Process data for charts
+        total_vacunos = report_stats['with_reports'] + report_stats['without_reports']
+        report_percent = round((report_stats['with_reports'] / total_vacunos * 100)) if total_vacunos > 0 else 0
 
-    # Generate PDF
-    pdf = HTML(string=html, base_url=request.host_url).write_pdf()
+        # Generate chart images
+        estado_chart = generate_doughnut(report_stats['with_reports'], report_stats['without_reports'])
+        raza_chart = generate_bar_chart(list(breed_stats.keys()), list(breed_stats.values()))
 
-    # Create response
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=reporte_granja_{granja_id}.pdf'
+        meses_labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+        meses_values = [0] * 12
+        for mes in monthly_stats:
+            meses_values[mes[0] - 1] = mes[1]
+        mes_chart = generate_line_chart(meses_labels, meses_values)
 
-    return response
+        html = render_template(
+            'pdf_template.html',
+            granja=granja,
+            owner_name=current_user.nombre,
+            estado_chart=estado_chart,
+            raza_chart=raza_chart,
+            mes_chart=mes_chart,
+            report_percent=report_percent
+        )
+
+        pdf = HTML(string=html, base_url=request.host_url).write_pdf()
+        response = make_response(pdf)
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=reporte_granja_{granja_id}.pdf'
+        return response
+
+    except Exception as ex:
+        app.logger.error(f"Error generating PDF: {str(ex)}")
+        flash("Error al generar el reporte PDF")
+        return redirect(url_for('estadisticas', granja_id=granja_id))
 
 
 @app.route('/exportar_excel')
@@ -357,12 +420,19 @@ def exportar_excel():
         return redirect(url_for('home'))
 
     try:
-        # Get data through model classes
+        # Get all necessary data
         lotes = ModelReporte.get_lotes_for_export(db, granja_id)
         lote_ids = [lote[0] for lote in lotes]
         vacunos = ModelReporte.get_vacunos_for_export(db, lote_ids)
+        reportes = ModelReporte.get_reportes_by_granja(db, granja_id)
 
-        # Create DataFrames (keep transformation logic here)
+        # Get chart data
+        breed_stats = ModelGranja.get_breed_stats(db, granja_id)
+        current_year = datetime.now().year
+        monthly_stats = ModelReporte.get_monthly_cattle_stats(db, granja_id, current_year)
+        report_stats = ModelGranja.get_report_stats(db, granja_id)
+
+        # Create DataFrames
         df_granja = pd.DataFrame([{
             'ID': granja[0],
             'Dirección': granja[1],
@@ -374,7 +444,7 @@ def exportar_excel():
         df_lotes = pd.DataFrame([{
             'ID Lote': lote[0],
             'Fecha Registro': lote[1],
-            'Herraje': lote[2],
+            'Nombre': lote[2],
             'Cantidad Vacunos': lote[3],
             'Estado': 'Activo' if lote[4] else 'Inactivo'
         } for lote in lotes])
@@ -390,12 +460,32 @@ def exportar_excel():
             'Proposito': vaca[7]
         } for vaca in vacunos])
 
+        df_reportes = pd.DataFrame([{
+            'ID Reporte': reporte[0],
+            'ID Arete': reporte[1],
+            'Fecha Reporte': reporte[2],
+            'Tipo Reporte': reporte[3],
+            'Observaciones': reporte[4]
+        } for reporte in reportes])
+
         # Create Excel file in memory
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            # Write data sheets
             df_granja.to_excel(writer, sheet_name='Granja', index=False)
             df_lotes.to_excel(writer, sheet_name='Lotes', index=False)
             df_vacunos.to_excel(writer, sheet_name='Vacunos', index=False)
+            df_reportes.to_excel(writer, sheet_name='Reportes', index=False)
+
+            # Get workbook and create charts sheet
+            workbook = writer.book
+            chartsheet = workbook.create_sheet('Gráficos')
+
+            # Add chart data tables
+            _add_chart_data(workbook, chartsheet, report_stats, breed_stats, monthly_stats)
+
+            # Create charts
+            _create_excel_charts(workbook, chartsheet, report_stats, breed_stats, monthly_stats)
 
         output.seek(0)
 
@@ -411,6 +501,80 @@ def exportar_excel():
         flash("Error al generar el reporte")
         return redirect(url_for('estadisticas', granja_id=granja_id))
 
+
+def _add_chart_data(workbook, sheet, report_stats, breed_stats, monthly_stats):
+    # Estado de la finca data
+    sheet.append(['Estado', 'Cantidad'])
+    sheet.append(['Con Reportes', report_stats['with_reports']])
+    sheet.append(['Sin Reportes', report_stats['without_reports']])
+
+    # Razas data
+    sheet.append([])
+    sheet.append([])
+    sheet.append(['Raza', 'Cantidad'])
+    for raza, cantidad in breed_stats.items():
+        sheet.append([raza, cantidad])
+
+    # Registros mensuales data
+    sheet.append([])
+    sheet.append([])
+    sheet.append(['Mes', 'Cantidad'])
+    meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+             'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
+    # Process monthly stats into ordered list
+    monthly_counts = [0] * 12
+    for month, count in monthly_stats:
+        if 1 <= month <= 12:
+            monthly_counts[month - 1] = count
+
+    for i, count in enumerate(monthly_counts):
+        sheet.append([meses[i], count])
+
+
+def _create_excel_charts(workbook, sheet, report_stats, breed_stats, monthly_stats):
+    # Doughnut Chart - Estado de la Finca
+    doughnut_chart = DoughnutChart()
+    labels = Reference(sheet, min_col=1, min_row=2, max_row=3)
+    data = Reference(sheet, min_col=2, min_row=1, max_row=3)
+    doughnut_chart.add_data(data, titles_from_data=True)
+    doughnut_chart.set_categories(labels)
+    doughnut_chart.title = 'Estado de la Finca'
+    doughnut_chart.style = 26
+    sheet.add_chart(doughnut_chart, "E2")
+
+    # Bar Chart - Distribución por Razas
+    bar_chart = BarChart()
+    bar_chart.title = "Distribución por Razas"
+    bar_chart.style = 10
+    bar_chart.y_axis.title = 'Cantidad'
+    bar_chart.x_axis.title = 'Razas'
+
+    data = Reference(sheet, min_col=2, min_row=6, max_row=6 + len(breed_stats))
+    cats = Reference(sheet, min_col=1, min_row=6, max_row=6 + len(breed_stats))
+    bar_chart.add_data(data)
+    bar_chart.set_categories(cats)
+    sheet.add_chart(bar_chart, "E20")
+
+    # Line Chart - Registros Mensuales
+    line_chart = LineChart()
+    line_chart.title = "Registros Mensuales"
+    line_chart.style = 12
+    line_chart.y_axis.title = 'Cantidad'
+    line_chart.x_axis.title = 'Meses'
+
+    start_row = 10 + len(breed_stats)
+    data = Reference(sheet, min_col=2, min_row=start_row, max_row=start_row + 11)
+    cats = Reference(sheet, min_col=1, min_row=start_row, max_row=start_row + 11)
+    line_chart.add_data(data)
+    line_chart.set_categories(cats)
+    sheet.add_chart(line_chart, "E40")
+
+    # Apply color styling
+    for chart in [doughnut_chart, bar_chart, line_chart]:
+        for series in chart.series:
+            series.graphicalProperties.line.solidFill = "C2A137"  # Border color
+            series.graphicalProperties.solidFill = "EAC655"  # Fill color
 
 @app.route('/importar_vacunos', methods=['POST'])
 @login_required

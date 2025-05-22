@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2ab2eaaa-ffd8-4077-b009-1e81bd1ebdb8" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/ModelReporte.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ModelReporte.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/ModelVacuno.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ModelVacuno.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/Estadisticas.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/Estadisticas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/GestionGanado.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/GestionGanado.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/GestionLotes.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/GestionLotes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/GestionReportes.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/GestionReportes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/InformacionVaca.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/InformacionVaca.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/InicioAdministrador.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/InicioAdministrador.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/templates/pdf_template.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/templates/pdf_template.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2wno7jtYIhZpo2EipWK2bpu2yZ8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.app.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="app" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="CowTrack" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.13" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-495700d161d3-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.22562.220" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2ab2eaaa-ffd8-4077-b009-1e81bd1ebdb8" name="Changes" comment="" />
+      <created>1746686568053</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1746686568053</updated>
+    </task>
+    <servers />
+  </component>
+</project>

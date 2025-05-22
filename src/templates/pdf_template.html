@@ -8,7 +8,23 @@
         .header { text-align: center; margin-bottom: 30px; }
         .info { margin: 15px 0; }
         .info p { margin: 5px 0; }
-        img { max-width: 200px; margin: 10px 0; }
+        img { max-width: 100%; margin: 10px 0; }
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .chart {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .chart h3 {
+            margin: 0 0 15px 0;
+            color: #484848;
+        }
     </style>
 </head>
 <body>
@@ -30,6 +46,23 @@
         <h2>Tatuaje Registrado</h2>
         <img src="{{ url_for('static', filename='img/' ~ granja[4] ~ '.png', _external=True) }}"
              alt="Tatuaje de la granja">
+    </div>
+
+    <div class="charts-container">
+        <div class="chart">
+            <h3>Estado de la Finca ({{ report_percent }}%)</h3>
+            <img src="data:image/png;base64,{{ estado_chart }}" style="max-width: 250px;">
+        </div>
+
+        <div class="chart">
+            <h3>Distribución por Razas</h3>
+            <img src="data:image/png;base64,{{ raza_chart }}">
+        </div>
+
+        <div class="chart">
+            <h3>Registros Mensuales</h3>
+            <img src="data:image/png;base64,{{ mes_chart }}">
+        </div>
     </div>
 </body>
 </html>

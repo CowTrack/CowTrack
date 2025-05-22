@@ -147,3 +147,42 @@ class ModelReporte:
             return cursor.fetchall()
         except Exception as ex:
             raise Exception(ex)
+
+    @classmethod
+    def get_razas_distribution(cls, db, granja_id):
+        """Get vacunos count by raza for the farm"""
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                SELECT raza, COUNT(*) as cantidad 
+                FROM vacuno 
+                WHERE ID_Lote IN (
+                    SELECT ID_Lote FROM lote WHERE ID_Granja = %s
+                )
+                GROUP BY raza
+            """, (granja_id,))
+            return cursor.fetchall()
+        except Exception as ex:
+            raise Exception(f"Error getting razas: {str(ex)}")
+        finally:
+            cursor.close()
+
+    @classmethod
+    def get_ejemplares_mensuales(cls, db, granja_id):
+        """Get monthly count of vacunos"""
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                   SELECT MONTH(fecha_nacimiento) as mes, COUNT(*) 
+                   FROM vacuno 
+                   WHERE ID_Lote IN (
+                       SELECT ID_Lote FROM lote WHERE ID_Granja = %s
+                   )
+                   GROUP BY MONTH(fecha_nacimiento)
+                   ORDER BY mes
+               """, (granja_id,))
+            return cursor.fetchall()
+        except Exception as ex:
+            raise Exception(f"Error getting monthly data: {str(ex)}")
+        finally:
+            cursor.close()

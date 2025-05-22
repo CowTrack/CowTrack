@@ -66,16 +66,17 @@ class ModelVacuno:
             cursor = db.connection.cursor()
 
             query = """
-                    INSERT INTO vacuno (
-                        ID_Lote, ID_Arete, ID_Fierro, Genero,
-                        Fecha_Nacimiento, Fecha_Registro, Raza,
-                        Estado_Salud, Proposito
-                    ) VALUES (%s, %s, %s, %s, %s, CURDATE(), %s, 'Sano', %s)
-                """
+                INSERT INTO vacuno (
+                    ID_Lote, ID_Arete, ID_Fierro, Nombre, Genero,
+                    Fecha_Nacimiento, Fecha_Registro, Raza,
+                    Estado_Salud, Proposito
+                ) VALUES (%s, %s, %s, %s, %s, %s, CURDATE(), %s, 'Sano', %s)
+            """
             params = (
                 data['lote'],
                 data['etiqueta'],
                 data['fierro'],
+                data['nombre'],  # New parameter
                 data['sexo'],
                 data['fecha_nacimiento'],
                 data['raza'],

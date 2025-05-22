@@ -8,246 +8,535 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f8f8;
-        }
+/* Estilos base responsivos */
+* {
+    box-sizing: border-box;
+}
 
-        /* IMPORTACION DEL HEADER y lo Mantiene fijo */
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px !important;
-            background-color: white;
-            z-index: 1000;
-        }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f8f8;
+}
 
-        /* Mantiene el sidebar fijo */
-        .sidebar {
-            position: fixed;
-            display: flex;
-            top: 55px;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background-color: #484848;
-            z-index: 999;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* IMPORTACION DEL HEADER y lo Mantiene fijo */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px !important;
+    background-color: white;
+    z-index: 1000;
+}
 
-        .contenIzquierdo,
-        .contenDerecho {
-            display: flex;
-            align-items: center;
-        }
+/* Mantiene el sidebar fijo */
+.sidebar {
+    position: fixed;
+    display: flex;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background-color: #484848;
+    z-index: 999;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: auto; /* Permite scroll horizontal en pantallas pequeñas */
+}
 
-        .contenIzquierdo {
-            justify-content: flex-start;
-            /* Mantiene elementos a la izquierda */
-            padding-left: 15px;
-            gap: 20px;
+.contenIzquierdo,
+.contenDerecho {
+    display: flex;
+    align-items: center;
+}
 
-        }
+.contenIzquierdo {
+    justify-content: flex-start;
+    padding-left: 15px;
+    gap: 10px; /* Reducido para móviles */
+}
 
-        .contenDerecho {
-            justify-content: flex-end;
-            /* Mantiene elementos a la derecha */
-            padding-right: 15px;
-            gap: 10px;
+.contenDerecho {
+    justify-content: flex-end;
+    padding-right: 15px;
+    gap: 5px; /* Reducido para móviles */
+}
 
-        }
+.contenIzquierdo svg,
+.contenDerecho svg {
+    cursor: pointer;
+}
 
-        .contenIzquierdo svg,
-        .contenDerecho svg {
-            cursor: pointer;
-        }
+.icon-button {
+    position: relative;
+    background: transparent;
+    border-left: #2c2f33 1px solid;
+    border-right: #2c2f33 1px solid;
+    border-top: none;
+    border-bottom: none;
+    padding: 10px 10px 0px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    height: 45px;
+    display: inline-block;
+    transition: 0.5s;
+    min-width: 45px; /* Asegura un tamaño mínimo */
+}
 
-        .icon-button {
-            position: relative;
-            background: transparent;
-            border-left: #2c2f33 1px solid;
-            border-right: #2c2f33 1px solid;
-            border-top: none;
-            border-bottom: none;
-            padding: 10px 10px 0px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            height: 45px;
-            /*relative: los elementos se posicionan de forma relativa a su posición normal.*/
-            display: inline-block;
-            transition: 0.5s;
-        }
+.tooltip-text {
+    visibility: hidden;
+    background-color: #2c2f33;
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0%;
+    font-family: sans-serif;
+    font-size: 15px;
+    font-weight: bolder;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
 
-        .tooltip-text {
-            visibility: hidden;
-            background-color: #2c2f33;
-            color: #fff;
-            text-align: center;
-            border-radius: 10px;
-            padding: 10px;
-            position: absolute;
-            z-index: 1;
-            top: 110%;
-            /* Posiciona el tooltip bajo del elemento */
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0%;
-            font-family: sans-serif;
-            font-size: 15px;
-            font-weight: bolder;
-            transition: opacity 0.2s;
-        }
+.icon-button:hover .tooltip-text {
+    visibility: visible;
+    opacity: 90%;
+}
 
-        .icon-button:hover .tooltip-text {
-            visibility: visible;
-            opacity: 90%;
-        }
+.icon-button:hover {
+    background: #2c2f33;
+}
 
-        .icon-button:hover {
-            background: #2c2f33;
-        }
+/* Estilos del banner */
+.encabezado {
+    margin-top: 105px;
+    padding: 20px 5% 10px 5%; /* Responsive padding */
+    width: auto;
+}
 
-        /*Estilos del banner*/
-        .encabezado {
-            margin-top: 105px;
-            padding: 40px 50px 20px 100px;
-            width: auto;
-        }
+.info {
+    background-color: #E6E7E7;
+    width: 100%; /* Ancho flexible */
+    max-width: 500px; /* Máximo ancho original */
+    min-height: 60px;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+}
 
+.info p {
+    margin: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 0.9rem; /* Tamaño responsivo */
+}
 
+.encabezado span {
+    display: block;
+    max-width: 100%; /* Cambiado de 75% a 100% */
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: 1.5rem; /* Tamaño responsivo */
+    font-weight: bold;
+    color: #000000;
+}
 
-        .info {
-            background-color: #E6E7E7;
-            width: 500px;
-            height: 60px;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-        }
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-height: 120px; /* Altura mínima flexible */
+    flex-wrap: wrap; /* Permite wrap en pantallas pequeñas */
+    gap: 20px; /* Espacio entre elementos cuando se envuelven */
+    padding: 0 5%; /* Padding responsive */
+}
 
+.infoIzquierdo {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ancho completo en móviles */
+    gap: 15px; /* Reducido para móviles */
+    padding-left: 0; /* Eliminado padding fijo */
+    flex-wrap: wrap; /* Permite wrap del contenido */
+}
 
-        .info p {
-            margin: 5px 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
+.infoIzquierdo img {
+    width: 80px; /* Tamaño reducido para móviles */
+    height: 80px;
+    border-radius: 100%;
+    object-fit: cover; /* Mantiene proporciones */
+}
 
-        .encabezado span {
-            display: block;
-            max-width: 75%;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: 28px;
-            font-weight: bold;
-            color: #000000;
-        }
+.infoDerecho {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Ancho completo en móviles */
+    padding: 10px;
+    justify-content: center;
+}
 
-        .banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            height: 150px;
-        }
+.porcentajes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 10px;
+    width: 120px; /* Tamaño fijo para el gráfico circular */
+    height: 120px;
+}
 
-        .infoIzquierdo {
-            display: flex;
-            align-items: center;
-            width: 75%;
-            gap: 20px;
-            padding-left: 100px;
-        }
+.infoDerecho label {
+    font-size: 0.9rem; /* Tamaño responsivo */
+    font-weight: bold;
+    color: black;
+    padding: 5px;
+    text-align: center;
+}
 
-        .infoIzquierdo img {
-            width: auto;
-            height: 150px;
-            border-radius: 100%;
-        }
+.numPorcen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1rem; /* Tamaño responsivo */
+    font-weight: bold;
+    color: black;
+}
 
-        .infoDerecho {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 25%;
-            padding: 5px 30px 15px 30px;
-        }
+.areaGraficas {
+    margin-top: 5px;
+    width: 100%; /* Ancho flexible */
+    max-width: 450px; /* Máximo ancho original */
+    margin-left: 0; /* Centrado automático */
+    margin-right: 0;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #E6E7E7;
+}
 
-        .porcentajes {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            padding: 10px;
-        }
+.cuerpoPagina {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 20px; /* Reducido para móviles */
+    flex-wrap: wrap;
+    margin-top: 10px;
+    margin-bottom: 50px;
+    padding: 0 5%; /* Padding responsive */
+}
 
-        .infoDerecho label {
-            font-size: 15px;
-            font-weight: bold;
-            color: black;
-            padding: 5px;
-            text-align: center;
-        }
+.buttonExportar {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Centrado en móviles */
+    flex-wrap: wrap;
+    padding: 20px 5% 35px 5%; /* Padding responsive */
+    gap: 10px; /* Espacio entre botones */
+}
 
-        .numPorcen {
-            position: absolute;
-            top: 38%;
-            left: 52%;
-            transform: translate(-50%, -50%);
-            font-size: 18px;
-            font-weight: bold;
-            color: black;
+.buttonExportar button {
+    padding: 12px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 14px;
+    background-color: #484848;
+    color: #fff;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
+    font-size: 0.9rem; /* Tamaño responsivo */
+    font-weight: bold;
+    margin: 5px; /* Margen uniforme */
+    min-width: 120px; /* Ancho mínimo para consistencia */
+}
 
-        }
+.buttonExportar button:hover {
+    background-color: #666666;
+    transition: background-color 0.3s;
+}
 
-        .areaGraficas {
-            margin-top: 5px;
-            width: 450px;
-            margin-left: 50px;
-            padding: 25px;
-            border-radius: 10px;
-            background-color: #E6E7E7;
-        }
+/* Media Queries para diferentes tamaños de pantalla */
 
-        .cuerpoPagina {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-            gap: 50px;
-            flex-wrap: wrap;
-            margin-top: 10px;
-            margin-bottom: 50px;
-        }
+/* Tablets pequeños (480px y superior) */
+@media screen and (min-width: 480px) {
+    .encabezado span {
+        font-size: 1.8rem;
+    }
 
-        .buttonExportar{
-            width:100%;
-            display: flex;
-            justify-content: right;
-            flex-wrap: wrap;
-            padding-top: 35px;
-            padding-bottom: 35px;
-        }
-        .buttonExportar button {
-            padding: 12px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 14px;
-            background-color: #484848;
-            color: #fff;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode';
-            font-size: 15px;
-            font-weight: bold;
-            margin-right: 30px;
-        }
+    .infoIzquierdo img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .info p {
+        font-size: 1rem;
+    }
+
+    .areaGraficas {
+        padding: 25px;
+    }
+}
+
+/* Tablets (768px y superior) */
+@media screen and (min-width: 768px) {
+    .encabezado {
+        padding: 30px 8% 15px 8%;
+    }
+
+    .encabezado span {
+        font-size: 2rem;
+    }
+
+    .banner {
+        flex-wrap: nowrap;
+        padding: 0 8%;
+        min-height: 150px;
+    }
+
+    .infoIzquierdo {
+        width: 70%;
+        gap: 20px;
+        flex-wrap: nowrap;
+    }
+
+    .infoIzquierdo img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .infoDerecho {
+        width: 30%;
+    }
+
+    .infoDerecho label {
+        font-size: 1rem;
+    }
+
+    .numPorcen {
+        font-size: 1.1rem;
+    }
+
+    .cuerpoPagina {
+        gap: 30px;
+        padding: 0 8%;
+    }
+
+    .buttonExportar {
+        justify-content: flex-end;
+        padding: 25px 8% 35px 8%;
+    }
+
+    .buttonExportar button {
+        font-size: 1rem;
+        margin: 0 0 0 15px;
+    }
+
+    .contenIzquierdo {
+        gap: 15px;
+    }
+
+    .contenDerecho {
+        gap: 8px;
+    }
+}
+
+/* Escritorios (992px y superior) */
+@media screen and (min-width: 992px) {
+    .encabezado {
+        padding: 35px 10% 18px 10%;
+    }
+
+    .banner {
+        padding: 0 10%;
+    }
+
+    .infoIzquierdo {
+        width: 75%;
+        padding-left: 50px;
+    }
+
+    .infoIzquierdo img {
+        width: 140px;
+        height: 140px;
+    }
+
+    .infoDerecho {
+        width: 25%;
+        padding: 5px 15px 15px 15px;
+    }
+
+    .cuerpoPagina {
+        gap: 40px;
+        padding: 0 10%;
+    }
+
+    .buttonExportar {
+        padding: 30px 10% 35px 10%;
+    }
+
+    .contenIzquierdo {
+        gap: 18px;
+    }
+
+    .contenDerecho {
+        gap: 10px;
+    }
+}
+
+/* Escritorios grandes (1200px y superior) */
+@media screen and (min-width: 1200px) {
+    .encabezado {
+        padding: 40px 12% 20px 12%;
+    }
+
+    .encabezado span {
+        font-size: 2.2rem;
+    }
+
+    .banner {
+        padding: 0 12%;
+    }
+
+    .infoIzquierdo {
+        padding-left: 80px;
+    }
+
+    .infoIzquierdo img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .infoDerecho {
+        padding: 5px 25px 15px 25px;
+    }
+
+    .cuerpoPagina {
+        gap: 50px;
+        padding: 0 12%;
+    }
+
+    .buttonExportar {
+        padding: 35px 12% 35px 12%;
+    }
+
+    .areaGraficas {
+        margin-left: 25px;
+    }
+
+    .contenIzquierdo {
+        gap: 20px; /* Restaura gap original */
+    }
+
+    .contenDerecho {
+        gap: 10px; /* Restaura gap original */
+    }
+}
+
+/* Para pantallas muy grandes (1400px y superior) */
+@media screen and (min-width: 1400px) {
+    .encabezado {
+        padding: 40px 50px 20px 100px; /* Restaura padding original */
+    }
+
+    .encabezado span {
+        font-size: 28px; /* Restaura tamaño original */
+        max-width: 75%; /* Restaura ancho original */
+    }
+
+    .banner {
+        height: 150px; /* Restaura altura original */
+    }
+
+    .infoIzquierdo {
+        width: 75%; /* Restaura ancho original */
+        padding-left: 100px; /* Restaura padding original */
+    }
+
+    .infoDerecho {
+        width: 25%; /* Restaura ancho original */
+        padding: 5px 30px 15px 30px; /* Restaura padding original */
+    }
+
+    .areaGraficas {
+        width: 450px; /* Restaura ancho original */
+        margin-left: 50px; /* Restaura margen original */
+    }
+
+    .buttonExportar {
+        justify-content: right; /* Restaura alineación original */
+    }
+
+    .buttonExportar button {
+        font-size: 15px; /* Restaura tamaño original */
+        margin-right: 30px; /* Restaura margen original */
+        margin-left: 0;
+    }
+}
+
+/* Ajustes específicos para gráficas responsivas */
+.areaGraficas canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media screen and (max-width: 480px) {
+    .sidebar {
+        padding: 0 5px;
+    }
+
+    .icon-button {
+        padding: 8px 8px 0px 12px;
+        min-width: 40px;
+    }
+
+    .encabezado span {
+        font-size: 1.3rem;
+    }
+
+    .info {
+        padding: 10px;
+    }
+
+    .info p {
+        font-size: 0.8rem;
+    }
+
+    .porcentajes {
+        width: 100px;
+        height: 100px;
+    }
+
+    .numPorcen {
+        font-size: 0.9rem;
+    }
+
+    .infoDerecho label {
+        font-size: 0.8rem;
+    }
+
+    .areaGraficas {
+        padding: 15px;
+    }
+
+    .buttonExportar button {
+        padding: 10px 12px;
+        font-size: 0.8rem;
+        min-width: 100px;
+    }
+}
     </style>
 </head>
 
@@ -295,14 +584,6 @@
         </div>
 
         <div class="contenDerecho">
-            <button class="icon-button">
-                <span class="tooltip-text">Configuración</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-gear-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-                </svg>
-            </button>
             <button onclick="window.location.href= '{{ url_for('logout') }}'" class="icon-button">
                 <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"

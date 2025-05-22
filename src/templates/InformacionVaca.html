@@ -295,6 +295,407 @@
             font-size: 20px;
 
         }
+        /* ===== MODIFICACIONES PARA RESPONSIVIDAD - InformacionVaca.html ===== */
+
+/* Modificar estilos existentes para responsividad */
+.encabezado {
+    margin: 105px 50px 0px 50px;
+    padding: 30px 30px 30px 30px;
+}
+
+.container {
+    margin: 0px 50px 15px 50px;
+    flex-wrap: wrap;
+}
+
+.infoVaca {
+    margin: 15px 50px 15px 50px;
+}
+
+/* Mejorar la sección de información */
+.info {
+    width: 100%;
+    max-width: 500px;
+    min-width: 250px;
+    font-size: 16px;
+}
+
+/* Mejorar las cajas de información */
+.caja {
+    flex: 0 0 calc(50% - 45px);
+    margin-right: 45px;
+}
+
+/* Estilos para los reportes */
+.reporte-item {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.observacion {
+    margin: 5px 0 0 20px;
+    font-style: italic;
+    color: #666;
+    font-size: 14px;
+}
+
+/* ===== MEDIA QUERIES ===== */
+
+/* Tablets y pantallas medianas (768px - 1024px) */
+@media screen and (max-width: 1024px) {
+    .encabezado {
+        margin: 105px 30px 0px 30px;
+        padding: 25px 20px 25px 20px;
+    }
+
+    .encabezado span {
+        font-size: 24px;
+    }
+
+    .container {
+        margin: 0px 30px 15px 30px;
+    }
+
+    .infoVaca {
+        margin: 15px 30px 15px 30px;
+    }
+
+    .info {
+        font-size: 16px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .fotoVaca img {
+        height: 120px;
+    }
+
+    .caja {
+        margin-right: 30px;
+    }
+}
+
+/* Móviles grandes (481px - 767px) */
+@media screen and (max-width: 767px) {
+    /* Ajustar sidebar para móviles */
+    .sidebar {
+        height: auto;
+        min-height: 50px;
+        padding: 5px 10px;
+        flex-wrap: wrap;
+    }
+
+    .contenIzquierdo, .contenDerecho {
+        gap: 8px;
+        padding: 0 5px;
+    }
+
+    .icon-button {
+        padding: 8px;
+        height: 40px;
+    }
+
+    .icon-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Ajustar encabezado */
+    .encabezado {
+        margin: 110px 20px 0px 20px;
+        padding: 20px 15px 20px 15px;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .encabezado span {
+        font-size: 20px;
+    }
+
+    /* Container principal - cambiar a layout vertical */
+    .container {
+        margin: 0px 20px 15px 20px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .infoIzquierdo {
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .infoDerecha {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Ajustar foto de la vaca */
+    .fotoVaca {
+        margin-top: 0;
+        align-self: center;
+    }
+
+    .fotoVaca img {
+        height: 100px;
+    }
+
+    /* Información de la vaca */
+    .info {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        min-height: 60px;
+        font-size: 14px;
+        text-align: left;
+        padding: 15px;
+    }
+
+    .info p {
+        white-space: normal;
+        line-height: 1.4;
+    }
+
+    /* Botones */
+    .boton-editar {
+        width: 100%;
+        max-width: 200px;
+        margin-top: 0;
+    }
+
+    /* Layout de información - cambiar a una columna */
+    .infoVaca {
+        margin: 15px 20px 15px 20px;
+    }
+
+    .caja {
+        flex: 0 0 100%;
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+
+    .encabezadoDATOS {
+        font-size: 18px;
+    }
+
+    /* Ajustar reportes */
+    .reporte-item {
+        font-size: 14px;
+    }
+
+    .observacion {
+        margin-left: 10px;
+        font-size: 13px;
+    }
+}
+
+/* Móviles pequeños (máximo 480px) */
+@media screen and (max-width: 480px) {
+    /* Sidebar más compacto */
+    .sidebar {
+        flex-direction: column;
+        height: auto;
+        padding: 8px 5px;
+        gap: 8px;
+    }
+
+    .contenIzquierdo {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 0;
+    }
+
+    .contenDerecho {
+        width: 100%;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .icon-button {
+        padding: 6px;
+        height: 35px;
+        margin: 2px;
+    }
+
+    .icon-button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Ocultar tooltips en móviles muy pequeños */
+    .tooltip-text {
+        display: none;
+    }
+
+    /* Encabezado más compacto */
+    .encabezado {
+        margin: 140px 10px 0px 10px;
+        padding: 15px 10px;
+    }
+
+    .encabezado span {
+        font-size: 18px;
+    }
+
+    /* Container principal */
+    .container {
+        margin: 0px 10px 15px 10px;
+        gap: 15px;
+    }
+
+    /* Información más compacta */
+    .fotoVaca img {
+        height: 80px;
+    }
+
+    .info {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .info p {
+        margin: 3px 0;
+    }
+
+    /* Botón más pequeño */
+    .boton-editar {
+        padding: 8px 15px;
+        font-size: 14px;
+        height: auto;
+        max-width: 150px;
+    }
+
+    /* Información de la vaca */
+    .infoVaca {
+        margin: 15px 10px;
+    }
+
+    .caja {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .encabezadoDATOS {
+        font-size: 16px;
+    }
+
+    .caja ul {
+        padding-left: 15px;
+    }
+
+    .caja li {
+        font-size: 14px;
+        padding: 3px 0;
+    }
+
+    /* Reportes más compactos */
+    .reporte-item {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .observacion {
+        font-size: 12px;
+        margin-left: 5px;
+    }
+    }
+
+    /* ===== MEJORAS ADICIONALES ===== */
+
+    /* Mejorar la experiencia táctil */
+    @media (hover: none) and (pointer: coarse) {
+        .boton-editar:hover,
+        .boton-examinar:hover {
+            background-color: inherit;
+        }
+
+        .boton-editar:active {
+            background-color: #f3c633;
+            transform: scale(0.95);
+        }
+
+        .boton-examinar:active {
+            background-color: #d7a86e;
+            transform: scale(0.95);
+        }
+    }
+
+    /* Añadir transiciones suaves */
+    .container,
+    .infoIzquierdo,
+    .infoDerecha,
+    .caja {
+        transition: all 0.3s ease;
+    }
+
+    /* Mejorar legibilidad en pantallas pequeñas */
+    @media screen and (max-width: 767px) {
+        body {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        strong, b {
+            font-weight: 600;
+        }
+    }
+
+    /* Layout especial para tablets en orientación horizontal */
+    @media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+        .container {
+            margin: 0px 40px 15px 40px;
+        }
+
+        .infoVaca {
+            margin: 15px 40px;
+        }
+
+        .caja {
+            flex: 0 0 calc(50% - 30px);
+        }
+    }
+
+    /* Optimización para pantallas muy anchas */
+    @media screen and (min-width: 1400px) {
+        .encabezado {
+            margin: 105px 200px 0px 200px;
+        }
+
+        .container {
+            margin: 0px 200px 15px 200px;
+        }
+
+        .infoVaca {
+            margin: 15px 200px;
+        }
+    }
+
+    /* Estilos para mejorar la accesibilidad */
+    @media (prefers-reduced-motion: reduce) {
+        .container,
+        .infoIzquierdo,
+        .infoDerecha,
+        .caja,
+        .boton-editar,
+        .boton-examinar {
+            transition: none;
+        }
+    }
+
+    /* Alto contraste para mejor legibilidad */
+    @media (prefers-contrast: high) {
+        .info {
+            background-color: #fff;
+            border: 2px solid #000;
+        }
+
+        .caja {
+            border-bottom: 3px solid #000;
+        }
+    }
     </style>
 </head>
 
@@ -351,23 +752,7 @@
         </div>
 
         <div class="contenDerecho">
-            <button class="icon-button">
-                <span class="tooltip-text">Notificaciones</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-bell-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
-                </svg>
-            </button>
-            <button class="icon-button">
-                <span class="tooltip-text">Configuración</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-gear-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-                </svg>
-            </button>
-            <button class="icon-button">
+            <button onclick="window.location.href= '{{ url_for('logout') }}'" class="icon-button">
                 <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                     class="bi bi-box-arrow-right" viewBox="0 0 20 20">

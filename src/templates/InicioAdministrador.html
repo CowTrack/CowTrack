@@ -371,6 +371,507 @@
                 gap: 60px;
             }
         }
+        /* ===== MODIFICACIONES Y MEJORAS PARA RESPONSIVIDAD - InicioAdministrador.html ===== */
+
+/* Modificar estilos base existentes */
+.sidebar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.contenIzquierdo {
+    background-color: transparent; /* Corregir el color verde */
+}
+
+.search-bar {
+    margin: 20px 20px 0 5%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.search-container input {
+    width: 200px;
+    transition: width 0.3s ease;
+}
+
+/* Mejorar el grid de fincas */
+.cuerpoPagina {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 30px;
+    padding: 30px 20px;
+    justify-items: center;
+}
+
+/* Mejorar las tarjetas de finca */
+.finca, .addFinca {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.finca:hover, .addFinca:hover {
+    transform: translateY(-5px);
+    box-shadow: 2px 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.finca img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.finca h3 {
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Mejorar tooltip */
+.tooltip {
+    width: 280px;
+    top: 130px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.tooltip h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+}
+
+.tooltip p {
+    margin: 5px 0;
+}
+
+/* Mejorar modales */
+.modal-content {
+    width: 90%;
+    max-width: 450px;
+    margin: 5% auto;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* ===== MEDIA QUERIES MEJORADAS ===== */
+
+/* Tablets grandes y pantallas medianas (769px - 1024px) */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .cuerpoPagina {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 25px;
+        width: 90%;
+    }
+
+    .banner span {
+        font-size: 30px;
+    }
+
+    .search-container input {
+        width: 180px;
+    }
+
+    .tooltip {
+        width: 260px;
+    }
+}
+
+/* Tablets y móviles grandes (481px - 768px) */
+@media screen and (max-width: 768px) {
+    /* Sidebar ajustado */
+    .sidebar {
+        padding: 0 10px;
+        height: auto;
+        min-height: 50px;
+    }
+
+    .icon-button {
+        padding: 8px;
+        height: 40px;
+    }
+
+    .icon-button svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* Banner */
+    .banner {
+        margin-top: 110px;
+    }
+
+    .banner span {
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    /* Barra de búsqueda */
+    .search-bar {
+        margin: 15px 10px 0 10px;
+        justify-content: center;
+    }
+
+    .search-container input {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* Grid de fincas */
+    .cuerpoPagina {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 20px;
+        width: 95%;
+        padding: 20px 10px;
+        margin: 0 auto 40px auto;
+    }
+
+    .finca, .addFinca {
+        width: 100px;
+        height: 100px;
+    }
+
+    .finca img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .finca h3 {
+        font-size: 12px;
+    }
+
+    .addFinca {
+        font-size: 12px;
+    }
+
+    .addFinca svg {
+        width: 25px;
+        height: 25px;
+        padding: 5px;
+    }
+
+    /* Tooltip ajustado */
+    .tooltip {
+        width: 250px;
+        top: 110px;
+        font-size: 13px;
+    }
+
+    .tooltip h3 {
+        font-size: 14px;
+    }
+
+    .actions {
+        gap: 8px;
+    }
+
+    .actions button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    /* Modal responsivo */
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        padding: 15px;
+    }
+
+    .modal-content h2, .modal-content h3 {
+        font-size: 18px;
+    }
+
+    .form-group input, .form-group select {
+        padding: 10px;
+        font-size: 16px; /* Evita zoom en iOS */
+    }
+}
+
+/* Móviles pequeños (máximo 480px) */
+@media screen and (max-width: 480px) {
+    /* Banner más compacto */
+    .banner {
+        margin-bottom: 15px;
+    }
+
+    .banner span {
+        font-size: 20px;
+        padding: 8px;
+    }
+
+    /* Barra de búsqueda */
+    .search-bar {
+        margin: 10px 5px 0 5px;
+    }
+
+    .search-container {
+        width: 100%;
+    }
+
+    .search-container input {
+        width: 100%;
+        padding: 12px 15px;
+        padding-right: 45px;
+    }
+
+    .search-icon {
+        left: auto;
+        right: 15px;
+    }
+
+    /* Grid más compacto */
+    .cuerpoPagina {
+        grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+        gap: 15px;
+        padding: 15px 5px;
+        width: 98%;
+    }
+
+    .finca, .addFinca {
+        width: 85px;
+        height: 85px;
+        border-radius: 12px;
+    }
+
+    .finca img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .finca h3 {
+        font-size: 10px;
+        line-height: 1.1;
+    }
+
+    .addFinca {
+        font-size: 10px;
+        line-height: 1.1;
+    }
+
+    .addFinca svg {
+        width: 20px;
+        height: 20px;
+        padding: 2px;
+    }
+
+    /* Tooltip adaptado */
+    .tooltip {
+        width: 200px;
+        top: 95px;
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .tooltip h3 {
+        font-size: 13px;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .actions button {
+        width: 100%;
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    /* Modal para móviles pequeños */
+    .modal-content {
+        width: 98%;
+        margin: 5% auto;
+        padding: 12px;
+        border-radius: 12px;
+    }
+
+    .modal-content h2, .modal-content h3 {
+        font-size: 16px;
+        margin-bottom: 15px;
+    }
+
+    .form-group {
+        margin: 12px 0;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    button[type="submit"] {
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    /* Botón de cerrar modal */
+    .close {
+        font-size: 24px;
+        float: right;
+        cursor: pointer;
+        color: #999;
+    }
+}
+
+/* ===== MEJORAS ADICIONALES ===== */
+
+/* Mejorar la experiencia táctil */
+@media (hover: none) and (pointer: coarse) {
+    .finca:hover, .addFinca:hover {
+        transform: none;
+    }
+
+    .finca:active, .addFinca:active {
+        transform: scale(0.95);
+    }
+
+    /* Hacer tooltip activable por toque */
+    .finca {
+        position: relative;
+    }
+
+    .finca:focus .tooltip,
+    .finca:active .tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+}
+
+/* Orientación landscape en móviles */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    .banner {
+        margin-top: 105px;
+        margin-bottom: 10px;
+    }
+
+    .banner span {
+        font-size: 22px;
+    }
+
+    .cuerpoPagina {
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        padding: 15px 10px;
+    }
+
+    .modal-content {
+        margin: 2% auto;
+        max-height: 95vh;
+    }
+}
+
+/* Pantallas muy anchas */
+@media screen and (min-width: 1400px) {
+    .cuerpoPagina {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 40px;
+        width: 75%;
+    }
+
+    .finca, .addFinca {
+        width: 140px;
+        height: 140px;
+    }
+
+    .finca img {
+        width: 70px;
+        height: 70px;
+    }
+
+    .finca h3 {
+        font-size: 16px;
+    }
+
+    .tooltip {
+        width: 320px;
+        top: 150px;
+    }
+}
+
+/* Mejorar accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    .finca, .addFinca, .search-container input {
+        transition: none;
+    }
+}
+
+/* Alto contraste */
+@media (prefers-contrast: high) {
+    .finca, .addFinca {
+        border: 2px solid #000;
+    }
+
+    .tooltip {
+        border: 2px solid #000;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .tooltip {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .modal-content {
+        background-color: #333;
+        color: #fff;
+    }
+
+    .form-group input, .form-group select {
+        background-color: #444;
+        color: #fff;
+        border-color: #666;
+    }
+}
+
+/* Estilos para mejorar la funcionalidad del search */
+.search-container input:focus {
+    outline: none;
+    border-color: #d7a86e;
+    box-shadow: 0 0 5px rgba(215, 168, 110, 0.3);
+}
+
+/* Animaciones suaves para las cards */
+.finca, .addFinca {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mejorar el overlay del modal */
+.modal {
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* Estados de los botones mejorados */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button:focus {
+    outline: 2px solid #d7a86e;
+    outline-offset: 2px;
+}
     </style>
 </head>
 
@@ -381,22 +882,6 @@
         <div class="contenIzquierdo"> <!-- NO QUITAR--> </div>
 
         <div class="contenDerecho">
-            <button class="icon-button">
-                <span class="tooltip-text">Notificaciones</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-bell-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901" />
-                </svg>
-            </button>
-            <button class="icon-button">
-                <span class="tooltip-text">Configuración</span>
-                <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                    class="bi bi-gear-fill" viewBox="0 0 20 20">
-                    <path
-                        d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
-                </svg>
-            </button>
             <button onclick="window.location.href= '{{ url_for('logout') }}'" class="icon-button">
                 <span class="tooltip-text">Cerrar Sesión</span>
                 <svg color="white" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
